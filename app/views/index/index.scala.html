@@ -1,0 +1,29 @@
+@(listMenu: String)
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        @cssTag("style.min.css")
+
+    </head>
+    <body>
+        <div id="header"></div>
+        <div id="main" class="clearfix">
+            <div id="app"></div>
+        </div>
+        <div id="footer"></div>
+
+        @jsTag("mithril/mithril.min.js")
+        @jsTag("app.js")
+        <script >
+            var menu = @Html(listMenu);
+            console.log(menu)
+            m.route(document.querySelector('#app'), "/", {
+                "/": window.Main.Home,
+                "/dashboard": window.Main.Dashboard
+            });
+
+        </script>
+    </body>
+</html>

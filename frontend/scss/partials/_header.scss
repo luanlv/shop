@@ -1,0 +1,65 @@
+.h-container {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+.h-left {
+  float: right;
+  width: 300px;
+}
+.h-right {
+  float: right;
+  width: 700px;
+  min-height: 30px;
+}
+
+.h-top {
+  height: 60px;
+}
+
+.h-bot {
+  height: 40px;
+}
+
+.search {
+  padding: 20px 0 0 100px;
+  height: 20px;
+  display: table-cell;
+  vertical-align: middle;
+  input {
+    width: 250px;
+  }
+}
+
+.navMenu{
+  height: 40px;
+  float: right;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    float: left;
+    a {
+      font:bold 16px 'UTMCafetaRegular';
+      //font-weight: bold;
+      height: 40px;
+      padding-left: 10px;
+      padding-right: 10px;
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        background: $top-menu-hover-active-background;
+        color: $top-menu-hover-active-color;
+      }
+    }
+  }
+  .active {
+    background: $top-menu-hover-active-background;
+    color: $top-menu-hover-active-color;
+  }
+}
+
+
+

@@ -1,0 +1,13 @@
+var Footer = Footer || {};
+
+Footer.controller = function(){
+
+};
+
+Footer.view = function(ctrl){
+    return (
+        <div>
+            FOOTER
+        </div>
+    )
+}

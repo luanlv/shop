@@ -1,0 +1,19 @@
+var Middle =  function(ctrl){
+    return (
+    <div className="mid">
+        <div className="slider">SLIDER</div>
+        <div className="productWr">
+            <h3>SẢN PHẨM PHẦN CỨNG</h3>
+            <div className="listProduct">
+            </div>
+        </div>
+        <div className="productWr">
+            <h3>MODULE</h3>
+            <div className="listProduct">
+            </div>
+        </div>
+    </div>
+    )
+};
+
+module.exports = Middle;

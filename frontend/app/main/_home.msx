@@ -1,0 +1,24 @@
+var Left = require('./partials/_left.msx');
+var Middle = require('./partials/_middle.msx');
+var Right = require('./partials/_right.msx');
+
+
+var Home = {
+    controller: function() {
+        var ctrl = this;
+        ctrl.data = m.prop([]);
+        //m.request({method: "GET", url: "/data1.json"}).then(function(res){
+        //  ctrl.data(res.data)
+        //});
+    },
+    view: function(ctrl) {
+        return m('div', [
+            Left(ctrl),
+            Middle(ctrl),
+            Right(ctrl),
+        ])
+    }
+};
+
+
+module.exports = Home;

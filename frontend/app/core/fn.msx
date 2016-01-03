@@ -1,0 +1,57 @@
+var fn = fn || {};
+
+fn.checkMenu = function(link){
+    var partRoute = m.route().split('/');
+    var result = true;
+    var partLink = link.replace('https://', '').replace('http://', '').split('/');
+    for(var i = 1; i < partLink.length; i++){
+        if(partLink[i] != partRoute[i]){
+            result = false;
+        }
+    }
+    return result;
+};
+
+fn.createMenu = function(menuJson, level){
+    return m('ul.level' + level, [
+        menuJson.map(function(child){
+            return m('li' + ((child.children != undefined)?'.has-sub':'.no-sub') + (fn.checkMenu(child.http)?'.active':'') +  ((fn.checkMenu(child.http) || (level === 1))?'.open':'') + (( level === 1 )?'.topMenu':''),  [
+                m('.link-menu-wr', [
+                    m('span', {
+                        onclick: function(event){
+                            var el = event.target.parentNode.parentNode;
+
+                            var flag = el.classList.contains('open');
+
+                            var listContainer = document.querySelectorAll('.level2 .open');
+
+                            for(var i = 0; i < listContainer.length; i++){
+                                listContainer[i].classList.remove('open')
+                            }
+
+                            if (el.classList) {
+                                if(!el.classList.contains('open') && !flag) {
+                                    el.classList.add('open');
+                                }
+                            } else {
+                                var classes = el.className.split(' ');
+                                var existingIndex = classes.indexOf('open');
+
+                                if (existingIndex >= 0)
+                                    classes.splice(existingIndex, 1);
+                                else
+                                    classes.push('open');
+                                el.className = classes.join(' ');
+                            }
+                        }
+                    } ,''),
+                    m('a', {href: child.http, config: m.route} ,m('span', child.title))
+                ]),
+                (child.children != undefined)?fn.createMenu(child.children, level + 1):''
+            ])
+        })
+    ])
+};
+
+
+module.exports = fn;

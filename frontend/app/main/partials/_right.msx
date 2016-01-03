@@ -1,0 +1,13 @@
+var Right = function(ctrl){
+    return (
+        <div className="right">
+            <div className="notify"></div>
+            <div className="saleWr">
+                <h3>SẢN PHẨM KHUYẾN MÃI</h3>
+                <div className="listSale"></div>
+            </div>
+        </div>
+    )
+};
+
+module.exports = Right;
