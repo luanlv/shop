@@ -53,5 +53,13 @@ fn.createMenu = function(menuJson, level){
     ])
 };
 
+fn.preloadImages = function(srcArray) {
+    for (var i = 0, len = srcArray.length; i < len; i++) {
+        var img = new Image();
+        img.src = srcArray[i];
+        img.style.display = 'none';
+        document.body.appendChild(img);
+    }
+}
 
 module.exports = fn;

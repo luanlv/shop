@@ -121,6 +121,14 @@ fn.createMenu = function(menuJson, level){
     ])
 };
 
+fn.preloadImages = function(srcArray) {
+    for (var i = 0, len = srcArray.length; i < len; i++) {
+        var img = new Image();
+        img.src = srcArray[i];
+        img.style.display = 'none';
+        document.body.appendChild(img);
+    }
+}
 
 module.exports = fn;
 
@@ -552,6 +560,8 @@ var menu = [
 
 module.exports = Left;
 },{"../../core/data.js":4,"../../core/fn.msx":5}],10:[function(require,module,exports){
+var fn = require('../../core/fn.msx');
+
 var Middle =  function(ctrl){
     return (
     {tag: "div", attrs: {className:"mid"}, children: [
@@ -561,6 +571,7 @@ var Middle =  function(ctrl){
                  config:
                     function(el, isInited){
                         if(!isInited){
+                            var preloadedAllImages = false;
                             var nextSlide = function(){
                                 if(ctrl.current == (ctrl.maxSlide - 1 )){
                                     ctrl.current = 0;
@@ -575,7 +586,10 @@ var Middle =  function(ctrl){
                             var slideOut, slideIn;
                             var startSlide = function(){
                                 slideOut = setTimeout(function slide(){
-                                console.log("runslide")
+                                    if(!preloadedAllImages){
+                                        fn.preloadImages([window.demoSlide[ctrl.current+1].info.image[0].origin]);
+                                        if( ctrl.current + 1 === ctrl.maxSlide - 1) preloadedAllImages = true;
+                                    }
                                     el.classList.add("fadeOutLeft");
                                     el.classList.add("animated");
                                     slideIn = setTimeout(function(){
@@ -708,7 +722,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{}],11:[function(require,module,exports){
+},{"../../core/fn.msx":5}],11:[function(require,module,exports){
 var Right = function(ctrl){
     return (
         {tag: "div", attrs: {className:"right"}, children: [
