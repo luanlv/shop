@@ -1,5 +1,6 @@
 package lila.product
 
+import lila.db.BSON
 import play.api.libs.json.Json
 import reactivemongo.bson.{Macros, BSONString, BSONHandler, BSONArray}
 
@@ -280,3 +281,4 @@ object Product {
 
   implicit val productFormat = Macros.handler[Product]
 }
+

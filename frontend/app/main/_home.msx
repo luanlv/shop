@@ -6,7 +6,7 @@ var Right = require('./partials/_right.msx');
 var Home = {
     controller: function() {
         var ctrl = this;
-        ctrl.data = m.prop([]);
+        //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
         //  ctrl.data(res.data)
         //});

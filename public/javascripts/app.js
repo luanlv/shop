@@ -187,7 +187,7 @@ var Right = require('./partials/_right.msx');
 var Home = {
     controller: function() {
         var ctrl = this;
-        ctrl.data = m.prop([]);
+        //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
         //  ctrl.data(res.data)
         //});
@@ -552,14 +552,41 @@ var Middle =  function(ctrl){
         {tag: "div", attrs: {className:"slider"}, children: ["SLIDER"]}, 
         {tag: "div", attrs: {className:"productWr"}, children: [
             {tag: "h3", attrs: {}, children: ["SẢN PHẨM PHẦN CỨNG"]}, 
-            {tag: "div", attrs: {className:"listProduct"}
-            }
+            (window.listProduct1.length<1)?(
+                {tag: "div", attrs: {className:"listProduct"}, children: [
+                    "LOADING !!!"
+                ]}
+            ):(
+                {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
+                    window.listProduct1.map(function(item){
+                        return (
+                            {tag: "div", attrs: {className:"itemWr"}, children: [
+                                {tag: "div", attrs: {className:"img-item"}, children: [
+                                    {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
+                                ]}, 
+
+                                {tag: "div", attrs: {className:"info-item"}, children: [
+                                    {tag: "div", attrs: {className:"name-item"}, children: [
+                                        item.core.name
+                                    ]}, 
+                                    {tag: "p", attrs: {}, children: [
+                                        {tag: "span", attrs: {}, children: ["Bán lẻ"]}, 
+                                        {tag: "div", attrs: {}, children: [item.core.price[0].price]}
+                                    ]}
+                                ]}
+                            ]}
+                        )
+                    })
+                ]}
+            )
         ]}, 
+
         {tag: "div", attrs: {className:"productWr"}, children: [
             {tag: "h3", attrs: {}, children: ["MODULE"]}, 
             {tag: "div", attrs: {className:"listProduct"}
             }
         ]}
+
     ]}
     )
 };

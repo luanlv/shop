@@ -1,4 +1,4 @@
-@(listMenu: String)
+@(listMenu: String, listProduct: String)
 <!doctype html>
 <html lang="en">
     <head>
@@ -18,12 +18,18 @@
         @jsTag("app.js")
         <script >
             var menu = @Html(listMenu);
-            console.log(menu)
+            var listProduct1 = [];
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,
                 "/dashboard": window.Main.Dashboard
             });
 
+            setTimeout(function(){
+                listProduct1 = @Html(listProduct);
+                m.redraw();
+            }, 1000);
         </script>
+
+
     </body>
 </html>

@@ -4,14 +4,41 @@ var Middle =  function(ctrl){
         <div className="slider">SLIDER</div>
         <div className="productWr">
             <h3>SẢN PHẨM PHẦN CỨNG</h3>
-            <div className="listProduct">
-            </div>
+            {(window.listProduct1.length<1)?(
+                <div className="listProduct">
+                    LOADING !!!
+                </div>
+            ):(
+                <div className="listProduct clearfix">
+                    {window.listProduct1.map(function(item){
+                        return (
+                            <div className="itemWr">
+                                <div className="img-item">
+                                    <img src={item.info.image[0].small} alt=""/>
+                                </div>
+
+                                <div className="info-item">
+                                    <div className="name-item">
+                                        {item.core.name}
+                                    </div>
+                                    <p>
+                                        <span>Bán lẻ</span>
+                                        <div>{item.core.price[0].price}</div>
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            )}
         </div>
+
         <div className="productWr">
             <h3>MODULE</h3>
             <div className="listProduct">
             </div>
         </div>
+
     </div>
     )
 };
