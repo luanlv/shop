@@ -569,12 +569,16 @@ var Middle =  function(ctrl){
                                     {tag: "div", attrs: {className:"name-item"}, children: [
                                         item.core.name
                                     ]}, 
-                                    {tag: "p", attrs: {}, children: [
-                                        {tag: "span", attrs: {}, children: ["Bán lẻ"]}, 
-                                        {tag: "div", attrs: {}, children: [item.core.price[0].price]}
+                                    {tag: "div", attrs: {className:"info-extra-item"}, children: [
+                                        {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
+                                        {tag: "div", attrs: {className:"price-item"}, children: [item.core.price[0].price, " Đ"]}
                                     ]}
+                                ]}, 
+                                {tag: "div", attrs: {className:"side-info"}, children: [
+                                    m.trust(item.extra.note)
                                 ]}
                             ]}
+
                         )
                     })
                 ]}

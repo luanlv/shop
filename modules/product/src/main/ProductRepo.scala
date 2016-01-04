@@ -90,7 +90,7 @@ trait ProductRepo {
   def getByCategory(cate: String, nb: Int)=
     productTube.coll.find(
       BSONDocument("sku.parent_id" -> cate),
-      BSONDocument("_id" -> 0, "slug" -> 1, "sku.slug" -> 1, "core" -> 1, "info.image" -> BSONDocument("$slice" -> 1), "extra.saleOff1" -> 1, "extra.saleOff2" -> 1)
+      BSONDocument("_id" -> 0, "slug" -> 1, "sku.slug" -> 1, "core" -> 1, "info.image" -> BSONDocument("$slice" -> 1), "extra.saleOff1" -> 1, "extra.saleOff2" -> 1, "extra.note" -> 1)
     )
       .cursor[BSONDocument]()
       .collect[List](nb)

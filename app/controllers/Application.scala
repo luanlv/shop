@@ -27,7 +27,7 @@ object Application extends LilaController{
   private def env = lila.app.Env.current
 
   def index = Action.async {
-    var products = ProductRepo.getByCategory("sub-cate-1", 10).map(Json.toJson(_)).await.toString
+    var products = ProductRepo.getByCategory("sub-cate-1", 12).map(Json.toJson(_)).await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
         val arr = (data\"v").as[JsArray].toString

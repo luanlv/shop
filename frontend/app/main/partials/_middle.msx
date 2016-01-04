@@ -21,12 +21,16 @@ var Middle =  function(ctrl){
                                     <div className="name-item">
                                         {item.core.name}
                                     </div>
-                                    <p>
-                                        <span>Bán lẻ</span>
-                                        <div>{item.core.price[0].price}</div>
-                                    </p>
+                                    <div className="info-extra-item">
+                                        <span>Bán lẻ:</span>
+                                        <div className="price-item">{item.core.price[0].price} Đ</div>
+                                    </div>
+                                </div>
+                                <div className="side-info">
+                                    {m.trust(item.extra.note)}
                                 </div>
                             </div>
+
                         )
                     })}
                 </div>
