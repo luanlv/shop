@@ -1,7 +1,84 @@
 var Middle =  function(ctrl){
     return (
     <div className="mid">
-        <div className="slider">SLIDER</div>
+        <div className="slider clearfix">
+
+            <div className="sliderWr"
+                 config={
+                    function(el, isInited){
+                        if(!isInited){
+                            var nextSlide = function(){
+                                if(ctrl.current == (ctrl.maxSlide - 1 )){
+                                    ctrl.current = 0;
+                                } else {
+                                    ctrl.current += 1;
+                                }
+                                ctrl.currentSlide(window.demoSlide[ctrl.current]);
+                                m.redraw();
+
+                            };
+
+                            var slideOut, slideIn;
+                            var startSlide = function(){
+                                slideOut = setTimeout(function slide(){
+                                console.log("runslide")
+                                    el.classList.add("fadeOutLeft");
+                                    el.classList.add("animated");
+                                    slideIn = setTimeout(function(){
+                                        nextSlide();
+                                        var animated = el.querySelectorAll('.animated');
+                                        for(var i = 0; i < animated.length; i++){
+                                            animated[i].classList.remove("animated");
+                                            ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
+                                                if(animated[i].classList.contains(cName)){
+                                                    animated[i].classList.remove(cName);
+
+                                                    animated[i].offsetWidth = animated[i].offsetWidth;
+
+                                                    animated[i].classList.add(cName);
+                                                }
+                                            });
+                                            animated[i].classList.add("animated");
+                                        }
+                                        el.classList.remove("fadeOutLeft");
+                                        el.classList.remove("animated");
+                                        slideOut = setTimeout(slide, 4000)
+                                    }, 1000)
+                                }, 4000);
+                            };
+                            startSlide();
+
+                            //setTimeout(function(){
+                            //    el.classList.remove("fadeOutLeft")
+                            //    el.classList.remove("animated")
+                            //}, 4000)
+
+                            el.addEventListener('mouseover', function(){
+                                clearTimeout(slideOut)
+                            });
+                            el.addEventListener('mouseout', function(){
+                                startSlide();
+                            });
+                        }
+                    }
+                 }
+            >
+                <div>
+                    <div className="slider-img fadeInLeft animated">
+                        <img src={ctrl.currentSlide().info.image[0].origin} alt=""/>
+                    </div>
+                    <div className="slider-text">
+                        <div className="slider-header fadeInDown animated">
+                            {ctrl.currentSlide().core.name}
+                        </div>
+                        <div className="slider-info fadeInUp animated">
+                            {m.trust(ctrl.currentSlide().extra.note)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <div className="productWr">
             <h3>SẢN PHẨM PHẦN CỨNG</h3>
             {(window.listProduct1.length<1)?(
@@ -18,7 +95,7 @@ var Middle =  function(ctrl){
                                 </div>
 
                                 <div className="info-item">
-                                    <div className="name-item">
+                                    <div className="name-item" >
                                         {item.core.name}
                                     </div>
                                     <div className="info-extra-item">
@@ -39,8 +116,37 @@ var Middle =  function(ctrl){
 
         <div className="productWr">
             <h3>MODULE</h3>
-            <div className="listProduct">
-            </div>
+            {(window.listProduct1.length<1)?(
+                <div className="listProduct">
+                    LOADING !!!
+                </div>
+            ):(
+                <div className="listProduct clearfix">
+                    {window.listProduct1.map(function(item){
+                        return (
+                            <div className="itemWr">
+                                <div className="img-item">
+                                    <img src={item.info.image[0].small} alt=""/>
+                                </div>
+
+                                <div className="info-item">
+                                    <div className="name-item" >
+                                        {item.core.name}
+                                    </div>
+                                    <div className="info-extra-item">
+                                        <span>Bán lẻ:</span>
+                                        <div className="price-item">{item.core.price[0].price} Đ</div>
+                                    </div>
+                                </div>
+                                <div className="side-info">
+                                    {m.trust(item.extra.note)}
+                                </div>
+                            </div>
+
+                        )
+                    })}
+                </div>
+            )}
         </div>
 
     </div>

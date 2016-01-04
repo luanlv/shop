@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <title>Document</title>
         @cssTag("style.min.css")
+        @cssTag("animate.min.css")
 
     </head>
     <body>
@@ -19,15 +20,19 @@
         <script >
             var menu = @Html(listMenu);
             var listProduct1 = [];
-            m.route(document.querySelector('#app'), "/", {
-                "/": window.Main.Home,
-                "/dashboard": window.Main.Dashboard
-            });
 
 //            setTimeout(function(){
                 listProduct1 = @Html(listProduct);
                 m.redraw();
 //            }, 0);
+
+            var demoSlide = listProduct1.slice(2, 6);
+
+            m.route(document.querySelector('#app'), "/", {
+                "/": window.Main.Home,
+                "/dashboard": window.Main.Dashboard
+            });
+
         </script>
 
 

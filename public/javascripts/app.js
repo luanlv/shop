@@ -187,6 +187,12 @@ var Right = require('./partials/_right.msx');
 var Home = {
     controller: function() {
         var ctrl = this;
+        //ctrl.slides = m.prop(window.demoSlide);
+        ctrl.currentSlide = m.prop({});
+        ctrl.current = 0;
+        ctrl.maxSlide = window.demoSlide.length;
+        ctrl.currentSlide(window.demoSlide[0]);
+        //console.log(window.demoSlide.length)
         //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
         //  ctrl.data(res.data)
@@ -549,7 +555,84 @@ module.exports = Left;
 var Middle =  function(ctrl){
     return (
     {tag: "div", attrs: {className:"mid"}, children: [
-        {tag: "div", attrs: {className:"slider"}, children: ["SLIDER"]}, 
+        {tag: "div", attrs: {className:"slider clearfix"}, children: [
+
+            {tag: "div", attrs: {className:"sliderWr", 
+                 config:
+                    function(el, isInited){
+                        if(!isInited){
+                            var nextSlide = function(){
+                                if(ctrl.current == (ctrl.maxSlide - 1 )){
+                                    ctrl.current = 0;
+                                } else {
+                                    ctrl.current += 1;
+                                }
+                                ctrl.currentSlide(window.demoSlide[ctrl.current]);
+                                m.redraw();
+
+                            };
+
+                            var slideOut, slideIn;
+                            var startSlide = function(){
+                                slideOut = setTimeout(function slide(){
+                                console.log("runslide")
+                                    el.classList.add("fadeOutLeft");
+                                    el.classList.add("animated");
+                                    slideIn = setTimeout(function(){
+                                        nextSlide();
+                                        var animated = el.querySelectorAll('.animated');
+                                        for(var i = 0; i < animated.length; i++){
+                                            animated[i].classList.remove("animated");
+                                            ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
+                                                if(animated[i].classList.contains(cName)){
+                                                    animated[i].classList.remove(cName);
+
+                                                    animated[i].offsetWidth = animated[i].offsetWidth;
+
+                                                    animated[i].classList.add(cName);
+                                                }
+                                            });
+                                            animated[i].classList.add("animated");
+                                        }
+                                        el.classList.remove("fadeOutLeft");
+                                        el.classList.remove("animated");
+                                        slideOut = setTimeout(slide, 4000)
+                                    }, 1000)
+                                }, 4000);
+                            };
+                            startSlide();
+
+                            //setTimeout(function(){
+                            //    el.classList.remove("fadeOutLeft")
+                            //    el.classList.remove("animated")
+                            //}, 4000)
+
+                            el.addEventListener('mouseover', function(){
+                                clearTimeout(slideOut)
+                            });
+                            el.addEventListener('mouseout', function(){
+                                startSlide();
+                            });
+                        }
+                    }
+                 
+            }, children: [
+                {tag: "div", attrs: {}, children: [
+                    {tag: "div", attrs: {className:"slider-img fadeInLeft animated"}, children: [
+                        {tag: "img", attrs: {src:ctrl.currentSlide().info.image[0].origin, alt:""}}
+                    ]}, 
+                    {tag: "div", attrs: {className:"slider-text"}, children: [
+                        {tag: "div", attrs: {className:"slider-header fadeInDown animated"}, children: [
+                            ctrl.currentSlide().core.name
+                        ]}, 
+                        {tag: "div", attrs: {className:"slider-info fadeInUp animated"}, children: [
+                            m.trust(ctrl.currentSlide().extra.note)
+                        ]}
+                    ]}
+                ]}
+            ]}
+
+        ]}, 
         {tag: "div", attrs: {className:"productWr"}, children: [
             {tag: "h3", attrs: {}, children: ["SẢN PHẨM PHẦN CỨNG"]}, 
             (window.listProduct1.length<1)?(
@@ -587,8 +670,37 @@ var Middle =  function(ctrl){
 
         {tag: "div", attrs: {className:"productWr"}, children: [
             {tag: "h3", attrs: {}, children: ["MODULE"]}, 
-            {tag: "div", attrs: {className:"listProduct"}
-            }
+            (window.listProduct1.length<1)?(
+                {tag: "div", attrs: {className:"listProduct"}, children: [
+                    "LOADING !!!"
+                ]}
+            ):(
+                {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
+                    window.listProduct1.map(function(item){
+                        return (
+                            {tag: "div", attrs: {className:"itemWr"}, children: [
+                                {tag: "div", attrs: {className:"img-item"}, children: [
+                                    {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
+                                ]}, 
+
+                                {tag: "div", attrs: {className:"info-item"}, children: [
+                                    {tag: "div", attrs: {className:"name-item"}, children: [
+                                        item.core.name
+                                    ]}, 
+                                    {tag: "div", attrs: {className:"info-extra-item"}, children: [
+                                        {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
+                                        {tag: "div", attrs: {className:"price-item"}, children: [item.core.price[0].price, " Đ"]}
+                                    ]}
+                                ]}, 
+                                {tag: "div", attrs: {className:"side-info"}, children: [
+                                    m.trust(item.extra.note)
+                                ]}
+                            ]}
+
+                        )
+                    })
+                ]}
+            )
         ]}
 
     ]}
@@ -600,10 +712,40 @@ module.exports = Middle;
 var Right = function(ctrl){
     return (
         {tag: "div", attrs: {className:"right"}, children: [
-            {tag: "div", attrs: {className:"notify"}}, 
+            {tag: "div", attrs: {className:"notify"}, children: [
+                {tag: "div", attrs: {className:"notify-header"}, children: [
+                    "THÔNG BÁO"
+                ]}, 
+                {tag: "div", attrs: {className:"notify-body"}, children: [
+                    "- Ship nội thành: 10,000Đ -", 
+                    {tag: "br", attrs: {}}, 
+                    {tag: "br", attrs: {}}, 
+                    "Miễn phí tiền ship với đơn hàng trên 200,000Đ (HN), trên 500,000Đ (TQ)"
+                ]}
+            ]}, 
             {tag: "div", attrs: {className:"saleWr"}, children: [
                 {tag: "h3", attrs: {}, children: ["SẢN PHẨM KHUYẾN MÃI"]}, 
-                {tag: "div", attrs: {className:"listSale"}}
+                {tag: "div", attrs: {className:"listSale"}, children: [
+                    window.listProduct1.map(function(item){
+                        return (
+                            {tag: "div", attrs: {className:"saleWr clearfix"}, children: [
+                                {tag: "div", attrs: {className:"sale-info"}, children: [
+                                    {tag: "div", attrs: {className:"sale-name"}, children: [item.core.name]}, 
+                                    {tag: "div", attrs: {className:"sale-price"}, children: [
+                                        (item.extra.saleOff2>0)?(item.core.price[0].price -item.extra.saleOff2):(
+                                            (100 - item.extra.saleOff1)* (item.core.price[0].price) /100
+                                        ), " Đ"
+                                    ]}, 
+                                    {tag: "div", attrs: {className:"old-price"}, children: [item.core.price[0].price, " đ"]}
+                                ]}, 
+                                {tag: "div", attrs: {className:"sale-img"}, children: [
+                                    {tag: "img", attrs: {src:item.info.image[0].thumb, alt:""}}
+                                ]}
+                            ]}
+
+                        )
+                    })
+                ]}
             ]}
         ]}
     )

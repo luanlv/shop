@@ -6,6 +6,12 @@ var Right = require('./partials/_right.msx');
 var Home = {
     controller: function() {
         var ctrl = this;
+        //ctrl.slides = m.prop(window.demoSlide);
+        ctrl.currentSlide = m.prop({});
+        ctrl.current = 0;
+        ctrl.maxSlide = window.demoSlide.length;
+        ctrl.currentSlide(window.demoSlide[0]);
+        //console.log(window.demoSlide.length)
         //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
         //  ctrl.data(res.data)
