@@ -572,6 +572,7 @@ var Middle =  function(ctrl){
                     function(el, isInited){
                         if(!isInited){
                             var preloadedAllImages = false;
+                            var running = false;
                             var nextSlide = function(){
                                 if(ctrl.current == (ctrl.maxSlide - 1 )){
                                     ctrl.current = 0;
@@ -585,34 +586,37 @@ var Middle =  function(ctrl){
 
                             var slideOut, slideIn;
                             var startSlide = function(){
-                                slideOut = setTimeout(function slide(){
-                                    if(!preloadedAllImages){
-                                        fn.preloadImages([window.demoSlide[ctrl.current+1].info.image[0].origin]);
-                                        if( ctrl.current + 1 === ctrl.maxSlide - 1) preloadedAllImages = true;
-                                    }
-                                    el.classList.add("fadeOutLeft");
-                                    el.classList.add("animated");
-                                    slideIn = setTimeout(function(){
-                                        nextSlide();
-                                        var animated = el.querySelectorAll('.animated');
-                                        for(var i = 0; i < animated.length; i++){
-                                            animated[i].classList.remove("animated");
-                                            ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
-                                                if(animated[i].classList.contains(cName)){
-                                                    animated[i].classList.remove(cName);
-
-                                                    animated[i].offsetWidth = animated[i].offsetWidth;
-
-                                                    animated[i].classList.add(cName);
-                                                }
-                                            });
-                                            animated[i].classList.add("animated");
+                                if(!running){
+                                    slideOut = setTimeout(function slide(){
+                                        if(!preloadedAllImages){
+                                            fn.preloadImages([window.demoSlide[ctrl.current+1].info.image[0].origin]);
+                                            if( ctrl.current + 1 === ctrl.maxSlide - 1) preloadedAllImages = true;
                                         }
-                                        el.classList.remove("fadeOutLeft");
-                                        el.classList.remove("animated");
-                                        slideOut = setTimeout(slide, 4000)
-                                    }, 1000)
-                                }, 4000);
+                                        el.classList.add("fadeOutLeft");
+                                        el.classList.add("animated");
+                                        slideIn = setTimeout(function(){
+                                            nextSlide();
+                                            var animated = el.querySelectorAll('.animated');
+                                            for(var i = 0; i < animated.length; i++){
+                                                animated[i].classList.remove("animated");
+                                                ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
+                                                    if(animated[i].classList.contains(cName)){
+                                                        animated[i].classList.remove(cName);
+
+                                                        animated[i].offsetWidth = animated[i].offsetWidth;
+
+                                                        animated[i].classList.add(cName);
+                                                    }
+                                                });
+                                                animated[i].classList.add("animated");
+                                            }
+                                            el.classList.remove("fadeOutLeft");
+                                            el.classList.remove("animated");
+                                            slideOut = setTimeout(slide, 4000)
+                                        }, 1000)
+                                    }, 4000);
+                                    running = true;
+                                }
                             };
                             startSlide();
 
@@ -622,7 +626,8 @@ var Middle =  function(ctrl){
                             //}, 4000)
 
                             el.addEventListener('mouseover', function(){
-                                clearTimeout(slideOut)
+                                clearTimeout(slideOut);
+                                running = false;
                             });
                             el.addEventListener('mouseout', function(){
                                 startSlide();
