@@ -59,11 +59,12 @@ var Middle =  function(ctrl){
                             //    el.classList.remove("animated")
                             //}, 4000)
 
-                            el.addEventListener('mouseover', function(){
+                            el.parentNode.addEventListener('mouseover', function(){
                                 onHover = true;
                             });
-                            el.addEventListener('mouseout', function(){
+                            el.parentNode.addEventListener('mouseleave', function(){
                                 onHover = false;
+
                             });
                         }
                     }
@@ -106,7 +107,7 @@ var Middle =  function(ctrl){
                                     </div>
                                     <div className="info-extra-item">
                                         <span>Bán lẻ:</span>
-                                        <div className="price-item">{item.core.price[0].price} Đ</div>
+                                        <div className="price-item">{fn.price(item.core.price[0].price)} Đ</div>
                                     </div>
                                 </div>
                                 <div className="side-info">
@@ -141,7 +142,7 @@ var Middle =  function(ctrl){
                                     </div>
                                     <div className="info-extra-item">
                                         <span>Bán lẻ:</span>
-                                        <div className="price-item">{item.core.price[0].price} Đ</div>
+                                        <div className="price-item">{fn.price(item.core.price[0].price)} Đ</div>
                                     </div>
                                 </div>
                                 <div className="side-info">

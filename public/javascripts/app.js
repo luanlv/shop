@@ -35,7 +35,8 @@ Nav.view = function(){
             {tag: "div", attrs: {className:"h-right"}, children: [
                 {tag: "div", attrs: {className:"h-top"}, children: [
                     {tag: "div", attrs: {className:"search"}, children: [
-                        {tag: "input", attrs: {type:"text"}}
+                        {tag: "input", attrs: {type:"text", placeholder:"Nhập từ khóa"}}, 
+                        {tag: "input", attrs: {type:"button", value:"Search"}}
                     ]}
 
                 ]}, 
@@ -78,6 +79,11 @@ fn.checkMenu = function(link){
         }
     }
     return result;
+};
+fn.price = function(price){
+    var priceString = price.toString();
+    var priceArray = priceString.split( /(?=(?:...)*$)/ );
+    return priceArray.join(',');
 };
 
 fn.createMenu = function(menuJson, level){
@@ -621,11 +627,12 @@ var Middle =  function(ctrl){
                             //    el.classList.remove("animated")
                             //}, 4000)
 
-                            el.addEventListener('mouseover', function(){
+                            el.parentNode.addEventListener('mouseover', function(){
                                 onHover = true;
                             });
-                            el.addEventListener('mouseout', function(){
+                            el.parentNode.addEventListener('mouseleave', function(){
                                 onHover = false;
+
                             });
                         }
                     }
@@ -668,7 +675,7 @@ var Middle =  function(ctrl){
                                     ]}, 
                                     {tag: "div", attrs: {className:"info-extra-item"}, children: [
                                         {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
-                                        {tag: "div", attrs: {className:"price-item"}, children: [item.core.price[0].price, " Đ"]}
+                                        {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
                                     ]}
                                 ]}, 
                                 {tag: "div", attrs: {className:"side-info"}, children: [
@@ -703,7 +710,7 @@ var Middle =  function(ctrl){
                                     ]}, 
                                     {tag: "div", attrs: {className:"info-extra-item"}, children: [
                                         {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
-                                        {tag: "div", attrs: {className:"price-item"}, children: [item.core.price[0].price, " Đ"]}
+                                        {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
                                     ]}
                                 ]}, 
                                 {tag: "div", attrs: {className:"side-info"}, children: [
@@ -723,6 +730,8 @@ var Middle =  function(ctrl){
 
 module.exports = Middle;
 },{"../../core/fn.msx":5}],11:[function(require,module,exports){
+var fn = require('../../core/fn.msx');
+
 var Right = function(ctrl){
     return (
         {tag: "div", attrs: {className:"right"}, children: [
@@ -746,11 +755,11 @@ var Right = function(ctrl){
                                 {tag: "div", attrs: {className:"sale-info"}, children: [
                                     {tag: "div", attrs: {className:"sale-name"}, children: [item.core.name]}, 
                                     {tag: "div", attrs: {className:"sale-price"}, children: [
-                                        (item.extra.saleOff2>0)?(item.core.price[0].price -item.extra.saleOff2):(
+                                        fn.price((item.extra.saleOff2>0)?(item.core.price[0].price -item.extra.saleOff2):(
                                             (100 - item.extra.saleOff1)* (item.core.price[0].price) /100
-                                        ), " Đ"
+                                        )), " Đ"
                                     ]}, 
-                                    {tag: "div", attrs: {className:"old-price"}, children: [item.core.price[0].price, " đ"]}
+                                    {tag: "div", attrs: {className:"old-price"}, children: [ fn.price(item.core.price[0].price), " Đ"]}
                                 ]}, 
                                 {tag: "div", attrs: {className:"sale-img"}, children: [
                                     {tag: "img", attrs: {src:item.info.image[0].thumb, alt:""}}
@@ -767,4 +776,4 @@ var Right = function(ctrl){
 
 module.exports = Right;
 
-},{}]},{},[6])
+},{"../../core/fn.msx":5}]},{},[6])

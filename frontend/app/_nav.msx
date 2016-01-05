@@ -12,7 +12,8 @@ Nav.view = function(){
             <div className="h-right">
                 <div className="h-top">
                     <div className="search">
-                        <input type="text"/>
+                        <input type="text" placeholder="Nhập từ khóa"/>
+                        <input type="button" value="Search"/>
                     </div>
 
                 </div>

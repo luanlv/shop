@@ -11,6 +11,11 @@ fn.checkMenu = function(link){
     }
     return result;
 };
+fn.price = function(price){
+    var priceString = price.toString();
+    var priceArray = priceString.split( /(?=(?:...)*$)/ );
+    return priceArray.join(',');
+};
 
 fn.createMenu = function(menuJson, level){
     return m('ul.level' + level, [

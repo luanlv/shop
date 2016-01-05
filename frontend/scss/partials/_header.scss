@@ -14,7 +14,7 @@
 }
 
 .h-top {
-  height: 60px;
+  height: 70px;
 }
 
 .h-bot {
@@ -22,12 +22,22 @@
 }
 
 .search {
-  padding: 20px 0 0 100px;
+  padding: 25px 0 0 230px;
   height: 20px;
   display: table-cell;
   vertical-align: middle;
-  input {
+  input[type="text"] {
     width: 250px;
+    padding:6px 15px;
+    border: 1px solid #dbdbdb;
+    &:hover {
+      border-color: $hover-link-color;
+    }
+  }
+  input[type="button"] {
+    width: 80px;
+    padding:5px 5px;
+
   }
 }
 
@@ -41,11 +51,12 @@
   li {
     float: left;
     a {
-      font:bold 16px 'UTMCafetaRegular';
+      font: normal 20px 'UTMCafetaRegular';
+      //font-family: Cafeta;
       //font-weight: bold;
       height: 40px;
-      padding-left: 10px;
-      padding-right: 10px;
+      padding-left: 15px;
+      padding-right: 15px;
       display: flex;
       align-items: center;
 

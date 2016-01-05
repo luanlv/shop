@@ -1,3 +1,5 @@
+var fn = require('../../core/fn.msx');
+
 var Right = function(ctrl){
     return (
         <div className="right">
@@ -21,11 +23,11 @@ var Right = function(ctrl){
                                 <div className="sale-info">
                                     <div className="sale-name">{item.core.name}</div>
                                     <div className="sale-price">
-                                        {(item.extra.saleOff2>0)?(item.core.price[0].price -item.extra.saleOff2):(
+                                        {fn.price((item.extra.saleOff2>0)?(item.core.price[0].price -item.extra.saleOff2):(
                                             (100 - item.extra.saleOff1)* (item.core.price[0].price) /100
-                                        )} Đ
+                                        ))} Đ
                                     </div>
-                                    <div className="old-price">{item.core.price[0].price} đ</div>
+                                    <div className="old-price">{ fn.price(item.core.price[0].price) } Đ</div>
                                 </div>
                                 <div className="sale-img">
                                     <img src={item.info.image[0].thumb} alt=""/>

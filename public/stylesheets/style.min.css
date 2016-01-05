@@ -114,7 +114,7 @@ input[type=text] {
   clear: both; }
 
 #header {
-  height: 100px;
+  height: 110px;
   padding: 0 0 0 0;
   border-bottom: 5px solid #eff0f2; }
 
@@ -162,18 +162,25 @@ input[type=text] {
   min-height: 30px; }
 
 .h-top {
-  height: 60px; }
+  height: 70px; }
 
 .h-bot {
   height: 40px; }
 
 .search {
-  padding: 20px 0 0 100px;
+  padding: 25px 0 0 230px;
   height: 20px;
   display: table-cell;
   vertical-align: middle; }
-  .search input {
-    width: 250px; }
+  .search input[type="text"] {
+    width: 250px;
+    padding: 6px 15px;
+    border: 1px solid #dbdbdb; }
+    .search input[type="text"]:hover {
+      border-color: #7FDBFF; }
+  .search input[type="button"] {
+    width: 80px;
+    padding: 5px 5px; }
 
 .navMenu {
   height: 40px;
@@ -184,10 +191,10 @@ input[type=text] {
   .navMenu li {
     float: left; }
     .navMenu li a {
-      font: bold 16px 'UTMCafetaRegular';
+      font: normal 20px 'UTMCafetaRegular';
       height: 40px;
-      padding-left: 10px;
-      padding-right: 10px;
+      padding-left: 15px;
+      padding-right: 15px;
       display: -webkit-flex;
       display: -ms-flexbox;
       display: flex;
@@ -358,12 +365,14 @@ input[type=text] {
   height: 48px;
   padding: 5px; }
   .info-item .name-item {
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
     margin: 0;
     padding: 0;
-    font-size: 12px;
+    font-size: 13px;
     color: #095da5;
-    font-weight: bold; }
+    font-weight: bolder; }
   .info-item .info-extra-item {
     margin: 5px 0 0 0; }
     .info-item .info-extra-item span {
@@ -371,7 +380,7 @@ input[type=text] {
       color: #aaa;
       display: inline; }
     .info-item .info-extra-item div.price-item {
-      font-size: 12px;
+      font-size: 14px;
       color: #FF4136;
       font-weight: bold;
       display: inline;
