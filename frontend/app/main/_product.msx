@@ -7,12 +7,12 @@ var Product = {
     controller: function() {
         var ctrl = this;
         ctrl.product = m.prop({status: "loading"});
-        //console.log(Object.keys(ctrl.product()).length);
+        ctrl.zoom = false;
         ctrl.setup = function(){
             ctrl.product(ctrl.request.data())
         };
         if(window.product === undefined || window.product.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.product, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProduct/" + m.route.param('item')}, ctrl.product, ctrl.setup);
         } else {
             ctrl.request = {
                 ready: function () {

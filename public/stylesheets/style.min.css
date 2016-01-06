@@ -105,6 +105,16 @@ input[type=text] {
   opacity: 1 !important;
   font-size: 12px !important; }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none; }
+
+.noScroll {
+  overflow: hidden; }
+
 .clearfix:after {
   content: " ";
   /* Older browser do not support empty content */
@@ -159,12 +169,12 @@ input[type=text] {
   background: rgba(192, 192, 192, 0.15); }
 
 .loader {
-  background: rgba(192, 192, 192, 0.15); }
+  margin-top: 200px; }
 
 .loader,
 .loader:before,
 .loader:after {
-  background: #666;
+  background: #2BA0C7;
   -webkit-animation: load1 1s infinite ease-in-out;
   animation: load1 1s infinite ease-in-out;
   width: 1em;
@@ -198,19 +208,19 @@ input[type=text] {
   0%,
   80%,
   100% {
-    box-shadow: 0 0 #666;
+    box-shadow: 0 0 #2BA0C7;
     height: 4em; }
   40% {
-    box-shadow: 0 -2em #666;
+    box-shadow: 0 -2em #2BA0C7;
     height: 5em; } }
 @keyframes load1 {
   0%,
   80%,
   100% {
-    box-shadow: 0 0 #666;
+    box-shadow: 0 0 #2BA0C7;
     height: 4em; }
   40% {
-    box-shadow: 0 -2em #666;
+    box-shadow: 0 -2em #2BA0C7;
     height: 5em; } }
 .h-container {
   width: 1000px;
@@ -488,11 +498,15 @@ input[type=text] {
   width: 300px;
   float: left; }
   .pt-left img {
-    width: 220px;
-    height: 200px;
     float: right;
-    margin: 10px;
-    border: 1px solid #ddd; }
+    border: 1px solid #ddd;
+    width: 210px;
+    height: 180px;
+    padding: 15px;
+    cursor: -webkit-zoom-in;
+    cursor: -moz-zoom-in; }
+  .pt-left .zoomWr {
+    position: relative; }
 
 .pt-right {
   width: 500px;
@@ -511,6 +525,37 @@ input[type=text] {
   .pt-right .price > span {
     font-weight: bold;
     color: #FF4136; }
+
+.productWr {
+  position: relative; }
+
+.zoomWr {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background: rgba(192, 192, 192, 0.4); }
+
+.zoomImageWr {
+  overflow: hidden;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-animation-duration: 0.1s !important;
+  animation-duration: 0.1s !important;
+  -webkit-animation-delay: 0.1s !important;
+  animation-delay: 0.1s !important; }
+  .zoomImageWr img {
+    max-width: 700px;
+    margin: 150px auto;
+    border: 1px solid #ddd;
+    cursor: -webkit-zoom-out;
+    cursor: -moz-zoom-out; }
 
 .notify {
   height: 240px;

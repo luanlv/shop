@@ -5,7 +5,7 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        <div className="productWrap fadeIn animated">
+        <div className="productWrap  ">
             {!ctrl.request.ready()?(
                 <div class="loader">Loading...</div>
             ):(
@@ -16,7 +16,12 @@ var Middle =  function(ctrl){
                         <div className="breadCrumb">{fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse()} <div className="current">{window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name}</div></div>
                         <div className="p-top clearfix">
                             <div className="pt-left">
-                                <img src={ctrl.product()[0].info.image[0].small} alt=""/>
+                                <img src={ctrl.product()[0].info.image[0].small} alt=""
+                                    onclick={function(){
+                                            ctrl.zoom=true;
+                                        }
+                                    }
+                                />
                             </div>
                             <div className="pt-right">
                                 <h1 className="name">{ctrl.product()[0].core.name}</h1>
@@ -27,6 +32,20 @@ var Middle =  function(ctrl){
                         <div className="p-bot">
 
                         </div>
+                        {ctrl.zoom?(<div className="zoomWr">
+                            <div className="zoomImageWr noScroll zoomIn animated ">
+                                <img class="" src={ctrl.product()[0].info.image[0].origin} alt=""
+                                 onclick={
+                                    function(event){
+                                        //var el = event.target;
+                                        //el.classList.remove("zoomIn");
+                                        //el.classList.add("zoomOut");
+                                        ctrl.zoom = false;
+                                    }
+                                 }
+                                />
+                            </div>
+                        </div>):""}
                     </div>
                 )
             )}

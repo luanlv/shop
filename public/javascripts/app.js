@@ -297,12 +297,12 @@ var Product = {
     controller: function() {
         var ctrl = this;
         ctrl.product = m.prop({status: "loading"});
-        //console.log(Object.keys(ctrl.product()).length);
+        ctrl.zoom = false;
         ctrl.setup = function(){
             ctrl.product(ctrl.request.data())
         };
         if(window.product === undefined || window.product.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.product, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProduct/" + m.route.param('item')}, ctrl.product, ctrl.setup);
         } else {
             ctrl.request = {
                 ready: function () {
@@ -675,7 +675,7 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        {tag: "div", attrs: {className:"productWrap fadeIn animated"}, children: [
+        {tag: "div", attrs: {className:"productWrap  "}, children: [
             !ctrl.request.ready()?(
                 {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
             ):(
@@ -686,7 +686,12 @@ var Middle =  function(ctrl){
                         {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name]}]}, 
                         {tag: "div", attrs: {className:"p-top clearfix"}, children: [
                             {tag: "div", attrs: {className:"pt-left"}, children: [
-                                {tag: "img", attrs: {src:ctrl.product()[0].info.image[0].small, alt:""}}
+                                {tag: "img", attrs: {src:ctrl.product()[0].info.image[0].small, alt:"", 
+                                    onclick:function(){
+                                            ctrl.zoom=true;
+                                        }
+                                    }
+                                }
                             ]}, 
                             {tag: "div", attrs: {className:"pt-right"}, children: [
                                 {tag: "h1", attrs: {className:"name"}, children: [ctrl.product()[0].core.name]}, 
@@ -696,7 +701,21 @@ var Middle =  function(ctrl){
                         ]}, 
                         {tag: "div", attrs: {className:"p-bot"}
 
-                        }
+                        }, 
+                        ctrl.zoom?({tag: "div", attrs: {className:"zoomWr"}, children: [
+                            {tag: "div", attrs: {className:"zoomImageWr noScroll zoomIn animated "}, children: [
+                                {tag: "img", attrs: {class:"", src:ctrl.product()[0].info.image[0].origin, alt:"", 
+                                 onclick:
+                                    function(event){
+                                        //var el = event.target;
+                                        //el.classList.remove("zoomIn");
+                                        //el.classList.add("zoomOut");
+                                        ctrl.zoom = false;
+                                    }
+                                 }
+                                }
+                            ]}
+                        ]}):""
                     ]}
                 )
             )
@@ -799,7 +818,7 @@ var Middle =  function(ctrl){
                 ]}
 
             ]}, 
-            {tag: "div", attrs: {className:"productWr fadeIn animated"}, children: [
+            {tag: "div", attrs: {className:"productWr"}, children: [
                 {tag: "h3", attrs: {}, children: ["SẢN PHẨM PHẦN CỨNG"]}, 
                 (ctrl.products().length<1)?(
                     {tag: "div", attrs: {className:"loading"}, children: [
@@ -809,9 +828,10 @@ var Middle =  function(ctrl){
                     {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
                         ctrl.products().map(function(item){
                             return (
-                                {tag: "a", attrs: {href:("/p" + window.urls[item.sku.slug] + "/" + item.slug), config:m.route}, children: [
+
 
                                     {tag: "div", attrs: {className:"itemWr"}, children: [
+                                        {tag: "a", attrs: {href:("/p" + window.urls[item.sku.slug] + "/" + item.slug), config:m.route}, children: [
                                         {tag: "div", attrs: {className:"img-item"}, children: [
                                             {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
                                         ]}, 
@@ -824,12 +844,12 @@ var Middle =  function(ctrl){
                                                 {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
                                                 {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
                                             ]}
+                                        ]}
                                         ]}, 
                                         {tag: "div", attrs: {className:"side-info"}, children: [
                                             m.trust(item.extra.note)
                                         ]}
                                     ]}
-                                ]}
                             )
                         })
                     ]}

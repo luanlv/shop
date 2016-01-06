@@ -91,7 +91,7 @@ var Middle =  function(ctrl){
                 </div>
 
             </div>
-            <div className="productWr fadeIn animated">
+            <div className="productWr">
                 <h3>SẢN PHẨM PHẦN CỨNG</h3>
                 {(ctrl.products().length<1)?(
                     <div className="loading">
@@ -101,9 +101,10 @@ var Middle =  function(ctrl){
                     <div className="listProduct clearfix">
                         {ctrl.products().map(function(item){
                             return (
-                                <a href={("/p" + window.urls[item.sku.slug] + "/" + item.slug)} config={m.route}>
+
 
                                     <div className="itemWr">
+                                        <a href={("/p" + window.urls[item.sku.slug] + "/" + item.slug)} config={m.route}>
                                         <div className="img-item">
                                             <img src={item.info.image[0].small} alt=""/>
                                         </div>
@@ -117,11 +118,11 @@ var Middle =  function(ctrl){
                                                 <div className="price-item">{fn.price(item.core.price[0].price)} Đ</div>
                                             </div>
                                         </div>
+                                        </a>
                                         <div className="side-info">
                                             {m.trust(item.extra.note)}
                                         </div>
                                     </div>
-                                </a>
                             )
                         })}
                     </div>
