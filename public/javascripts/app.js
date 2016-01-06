@@ -19,9 +19,10 @@ var Main = Main || {};
 Main.Home = require('./main/_home.msx');
 Main.Dashboard = require('./main/_dashboard.msx');
 Main.Product = require('./main/_product.msx');
+Main.Category = require('./main/_category.msx');
 
 module.exports = Main;
-},{"./main/_dashboard.msx":7,"./main/_home.msx":8,"./main/_product.msx":9}],3:[function(require,module,exports){
+},{"./main/_category.msx":7,"./main/_dashboard.msx":8,"./main/_home.msx":9,"./main/_product.msx":10}],3:[function(require,module,exports){
 
 
 var Nav = {};
@@ -205,6 +206,62 @@ m.mount(document.querySelector('#header'), Nav);
 
 },{"./_footer.msx":1,"./_main.msx":2,"./_nav.msx":3}],7:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
+var Middle = require('./partials/_middle-category.msx');
+var Right = require('./partials/_right.msx');
+var fn = require('../core/fn.msx');
+
+var Category = {
+    controller: function() {
+        var ctrl = this;
+        console.log("ZZZZZZz")
+        //ctrl.slides = m.prop(window.demoSlide);
+        ctrl.currentSlide = m.prop({});
+        ctrl.products = m.prop([]);
+        ctrl.slides = m.prop([]);
+        ctrl.current = 0;
+
+        //ctrl.currentSlide(window.demoSlide[0]);
+
+        ctrl.loading = true;
+        ctrl.ok = false;
+        ctrl.setup = function(){
+            ctrl.products(ctrl.request.data());
+            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.currentSlide(ctrl.slides()[0]);
+            ctrl.maxSlide = ctrl.slides().length;
+        };
+
+        if(window.demoSlide === undefined || window.demoSlide.length == 0) {
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.products, ctrl.setup);
+        } else {
+                ctrl.request = {
+                    ready: function () {
+                        return true
+                    },
+                    data: m.prop(window.demoSlide)
+                };
+                ctrl.setup()
+        }
+        window.demoSlide = [];
+        //console.log(window.demoSlide.length)
+        //ctrl.data = m.prop([]);
+        //m.request({method: "GET", url: "/data1.json"}).then(function(res){
+        //  ctrl.data(res.data)
+        //});
+    },
+    view: function(ctrl) {
+        return m('div', [
+            Left(ctrl),
+            Middle(ctrl),
+            Right(ctrl),
+        ])
+    }
+};
+
+
+module.exports = Category;
+},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-category.msx":12,"./partials/_right.msx":15}],8:[function(require,module,exports){
+var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right.msx');
 
@@ -232,7 +289,7 @@ var Dashboard = {
 };
 
 module.exports = Dashboard;
-},{"./partials/_left.msx":10,"./partials/_middle.msx":12,"./partials/_right.msx":13}],8:[function(require,module,exports){
+},{"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right.msx":15}],9:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right.msx');
@@ -287,7 +344,7 @@ var Home = {
 
 
 module.exports = Home;
-},{"../core/fn.msx":5,"./partials/_left.msx":10,"./partials/_middle.msx":12,"./partials/_right.msx":13}],9:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right.msx":15}],10:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-product.msx');
 var Right = require('./partials/_right.msx');
@@ -325,7 +382,7 @@ var Product = {
 
 
 module.exports = Product;
-},{"../core/fn.msx":5,"./partials/_left.msx":10,"./partials/_middle-product.msx":11,"./partials/_right.msx":13}],10:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-product.msx":13,"./partials/_right.msx":15}],11:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 var data = require('../../core/data.js');
 
@@ -667,7 +724,170 @@ var menu = [
 
 
 module.exports = Left;
-},{"../../core/data.js":4,"../../core/fn.msx":5}],11:[function(require,module,exports){
+},{"../../core/data.js":4,"../../core/fn.msx":5}],12:[function(require,module,exports){
+var fn = require('../../core/fn.msx');
+
+var Middle =  function(ctrl){
+    return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
+            {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+        ]}):(
+        (ctrl.request.data().length < 1)?(
+            {tag: "div", attrs: {className:"mid"}, children: [" ERROR !!!"]}
+        ):(
+        {tag: "div", attrs: {className:"mid"}, children: [
+            {tag: "div", attrs: {className:"slider clearfix"}, children: [
+
+                {tag: "div", attrs: {className:"sliderWr", 
+                     config:
+                        function(el, isInited){
+                            if(!isInited){
+                                var preloadedAllImages = false;
+                                var onHover = false;
+                                var nextSlide = function(){
+                                    if(ctrl.current == (ctrl.maxSlide - 1 )){
+                                        ctrl.current = 0;
+                                    } else {
+                                        ctrl.current += 1;
+                                    }
+                                    ctrl.currentSlide(ctrl.slides()[ctrl.current]);
+                                    m.redraw();
+
+                                };
+
+                                var slideOut, slideIn;
+
+                                slideOut = setInterval(function slide(){
+                                    if(!preloadedAllImages){
+                                        fn.preloadImages([ctrl.slides()[ctrl.current+1].info.image[0].origin]);
+                                        if( ctrl.current + 1 === ctrl.maxSlide - 1) preloadedAllImages = true;
+                                    }
+                                    if(!onHover){
+                                        el.classList.add("fadeOutLeft");
+                                        el.classList.add("animated");
+                                        slideIn = setTimeout(function(){
+                                            nextSlide();
+                                            var animated = el.querySelectorAll('.animated');
+                                            for(var i = 0; i < animated.length; i++){
+                                                animated[i].classList.remove("animated");
+                                                ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
+                                                    if(animated[i].classList.contains(cName)){
+                                                        animated[i].classList.remove(cName);
+
+                                                        animated[i].offsetWidth = animated[i].offsetWidth;
+
+                                                        animated[i].classList.add(cName);
+                                                    }
+                                                });
+                                                animated[i].classList.add("animated");
+                                            }
+                                            el.classList.remove("fadeOutLeft");
+                                            el.classList.remove("animated");
+                                        }, 700)
+                                    }
+                                }, 3700);
+
+                                //setTimeout(function(){
+                                //    el.classList.remove("fadeOutLeft")
+                                //    el.classList.remove("animated")
+                                //}, 4000)
+
+                                el.parentNode.addEventListener('mouseover', function(){
+                                    onHover = true;
+                                });
+                                el.parentNode.addEventListener('mouseleave', function(){
+                                    onHover = false;
+
+                                });
+                            }
+                        }
+                     
+                }, children: [
+                    {tag: "div", attrs: {}, children: [
+                        {tag: "div", attrs: {className:"slider-img fadeInLeft animated"}, children: [
+                            {tag: "img", attrs: {src:ctrl.currentSlide().info.image[0].origin, alt:""}}
+                        ]}, 
+                        {tag: "div", attrs: {className:"slider-text"}, children: [
+                            {tag: "div", attrs: {className:"slider-header fadeInDown animated"}, children: [
+                                ctrl.currentSlide().core.name
+                            ]}, 
+                            {tag: "div", attrs: {className:"slider-info fadeInUp animated"}, children: [
+                                m.trust(ctrl.currentSlide().extra.note)
+                            ]}
+                        ]}
+                    ]}
+                ]}
+
+            ]}, 
+
+            {tag: "div", attrs: {className:"categoryWr "}, children: [
+                {tag: "div", attrs: {className:"clearfix"}, children: [
+                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category')}).name]}, 
+                    {tag: "div", attrs: {className:"fr"}, children: [
+                        "Sắp xếp sản phẩm:", 
+                        {tag: "select", attrs: {class:"select", id:"sortMode"}, children: [
+                            {tag: "option", attrs: {value:"by_pass"}, children: ["Mặc định"]}, 
+                            {tag: "option", attrs: {value:"n-1"}, children: ["ID sản phẩm giảm dần"]}, 
+                            {tag: "option", attrs: {value:"1-n"}, children: ["ID sản phẩm tăng dần"]}, 
+                            {tag: "option", attrs: {value:"a-z"}, children: ["Tên sản phẩm từ A-Z"]}, 
+                            {tag: "option", attrs: {value:"z-a"}, children: ["Tên sản phẩm từ Z-A"]}, 
+                            {tag: "option", attrs: {value:"max-min"}, children: ["Giá sản phẩm giảm dần"]}, 
+                            {tag: "option", attrs: {value:"min-max", selected:"selected"}, children: ["Giá sản phẩm tăng dần"]}
+                        ]}, 
+
+                        {tag: "select", attrs: {class:"select", id:"sortLimit"}, children: [
+                            {tag: "option", attrs: {value:"20", selected:"selected"}, children: ["20"]}, 
+                            {tag: "option", attrs: {value:"32"}, children: ["32"]}, 
+                            {tag: "option", attrs: {value:"48"}, children: ["48"]}, 
+                            {tag: "option", attrs: {value:"56"}, children: ["56"]}
+                        ]}
+
+                    ]}
+                ]}, 
+                (ctrl.products().length<1)?(
+                    {tag: "div", attrs: {className:"loading"}, children: [
+                        "LOADING !!!"
+                    ]}
+                ):(
+                    {tag: "div", attrs: {className:"listProduct inCategory clearfix"}, children: [
+                        ctrl.products().map(function(item){
+                            return (
+
+
+                                    {tag: "div", attrs: {className:"itemWr"}, children: [
+                                        {tag: "a", attrs: {href:("/p/" + item.slug), config:m.route}, children: [
+                                        {tag: "div", attrs: {className:"img-item"}, children: [
+                                            {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
+                                        ]}, 
+
+                                        {tag: "div", attrs: {className:"info-item"}, children: [
+                                            {tag: "div", attrs: {className:"name-item"}, children: [
+                                                item.core.name
+                                            ]}, 
+                                            {tag: "div", attrs: {className:"info-extra-item"}, children: [
+                                                {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
+                                                {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
+                                            ]}
+                                        ]}
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"side-info"}, children: [
+                                            m.trust(item.extra.note)
+                                        ]}
+                                    ]}
+                            )
+                        })
+                    ]}
+                )
+            ]}
+
+
+        ]}
+        )
+        )
+    )
+};
+
+module.exports = Middle;
+},{"../../core/fn.msx":5}],13:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
@@ -675,15 +895,17 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        {tag: "div", attrs: {className:"productWrap  "}, children: [
+        {tag: "div", attrs: {className:"productWrap "}, children: [
             !ctrl.request.ready()?(
                 {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
             ):(
                 (ctrl.product().length < 0)?(
                     {tag: "div", attrs: {}, children: ["ERROR !!!"]}
                 ):(
-                    {tag: "div", attrs: {}, children: [
-                        {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name]}]}, 
+                    {tag: "div", attrs: {class:true}, children: [
+                        {tag: "div", attrs: {className:"clearfix"}, children: [
+                            {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name]}]}
+                        ]}, 
                         {tag: "div", attrs: {className:"p-top clearfix"}, children: [
                             {tag: "div", attrs: {className:"pt-left"}, children: [
                                 {tag: "img", attrs: {src:ctrl.product()[0].info.image[0].small, alt:"", 
@@ -724,7 +946,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],12:[function(require,module,exports){
+},{"../../core/fn.msx":5}],14:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
@@ -831,9 +1053,9 @@ var Middle =  function(ctrl){
 
 
                                     {tag: "div", attrs: {className:"itemWr"}, children: [
-                                        {tag: "a", attrs: {href:("/p" + window.urls[item.sku.slug] + "/" + item.slug), config:m.route}, children: [
-                                        {tag: "div", attrs: {className:"img-item"}, children: [
-                                            {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
+                                        {tag: "a", attrs: {href:("/p/" + item.slug), config:m.route}, children: [
+                                        {tag: "div", attrs: {className:"img-item bo-5"}, children: [
+                                            {tag: "img", attrs: {class:"bo-5", src:item.info.image[0].small, alt:""}}
                                         ]}, 
 
                                         {tag: "div", attrs: {className:"info-item"}, children: [
@@ -898,7 +1120,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],13:[function(require,module,exports){
+},{"../../core/fn.msx":5}],15:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Right = function(ctrl){

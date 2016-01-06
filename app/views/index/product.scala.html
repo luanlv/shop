@@ -37,7 +37,8 @@
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,
                 "/dashboard": window.Main.Dashboard,
-                "/p/:supCategory/:subCategory/:item": window.Main.Product
+                "/p/:item": window.Main.Product,
+                "/c/:category": window.Main.Category
             });
 
         </script>

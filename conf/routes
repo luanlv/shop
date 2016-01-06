@@ -2,7 +2,8 @@
 
 
 GET   /                                controllers.Application.index
-GET   /p/:supSku/:subSku/:slug         controllers.Application.product(supSku: String, subSku: String, slug: String)
+GET   /p/:slug         controllers.Application.product(slug: String)
+GET   /c/:slug         controllers.Application.category(slug: String)
 
 GET   /login                           controllers.Auth.login
 POST  /login                           controllers.Auth.authenticate

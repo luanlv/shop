@@ -5,15 +5,17 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        <div className="productWrap  ">
+        <div className="productWrap ">
             {!ctrl.request.ready()?(
                 <div class="loader">Loading...</div>
             ):(
                 (ctrl.product().length < 0)?(
                     <div>ERROR !!!</div>
                 ):(
-                    <div>
-                        <div className="breadCrumb">{fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse()} <div className="current">{window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name}</div></div>
+                    <div class>
+                        <div className="clearfix">
+                            <div className="breadCrumb">{fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse()} <div className="current">{window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name}</div></div>
+                        </div>
                         <div className="p-top clearfix">
                             <div className="pt-left">
                                 <img src={ctrl.product()[0].info.image[0].small} alt=""

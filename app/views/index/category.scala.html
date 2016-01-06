@@ -9,7 +9,7 @@
             <!--[if lt IE 9]>
               <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.4.1/es5-shim.min.js"></script>
             <![endif]-->
-    </head>
+        </head>
     <body>
         <div id="header"></div>
         <div id="main" class="clearfix">
@@ -21,24 +21,24 @@
         @jsTag("main.js")
         @jsTag("app.js")
         <script >
-            var menu = @Html(listMenu);
-            var allCategory = @Html(allCategory);
-            var urls = buildUrls(allCategory);
-            var listProduct1 = [];
+                var menu = @Html(listMenu);
+                var allCategory = @Html(allCategory);
+                var urls = buildUrls(allCategory);
+                var listProduct1 = [];
 
-//            setTimeout(function(){
+                //            setTimeout(function(){
                 listProduct1 = @Html(listProduct);
                 m.redraw();
-//            }, 0);
+                //            }, 0);
 
-            var demoSlide = listProduct1;
+                var demoSlide = listProduct1;
 
-            m.route(document.querySelector('#app'), "/", {
-                "/": window.Main.Home,
-                "/dashboard": window.Main.Dashboard,
-                "/p/:item": window.Main.Product,
-                "/c/:category": window.Main.Category
-            });
+                m.route(document.querySelector('#app'), "/", {
+                    "/": window.Main.Home,
+                    "/dashboard": window.Main.Dashboard,
+                    "/p/:item": window.Main.Product,
+                    "/c/:category": window.Main.Category
+                });
 
         </script>
 

@@ -37,7 +37,7 @@ object Application extends LilaController{
     }
   }
 
-  def product(supSku: String, subSku: String, slug: String) = Action.async {
+  def product(slug: String) = Action.async {
     val product = ProductRepo.getOneBySlug(slug).map(Json.toJson(_)).await.toString
     val allCategorys = CategoryRepo.getAllCategory().await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
@@ -47,6 +47,18 @@ object Application extends LilaController{
       }
     }
   }
+
+  def category(slug: String) = Action.async {
+    val products = ProductRepo.getByCategory("sub-cate-1", 12).map(Json.toJson(_)).await.toString
+    val allCategorys = CategoryRepo.getAllCategory().await.toString
+    lila.setup.Env.current.setupRepo.get("listMenu").map {
+      data => {
+        val arr = (data\"v").as[JsArray].toString
+        Ok(views.html.index.category(arr, allCategorys, products))
+      }
+    }
+  }
+
 }
 
 
