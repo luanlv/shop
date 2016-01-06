@@ -1,0 +1,36 @@
+var Left = require('./partials/_left.msx');
+var Middle = require('./partials/_middle-product.msx');
+var Right = require('./partials/_right.msx');
+
+
+var Product = {
+    controller: function() {
+        var ctrl = this;
+        ctrl.product = m.prop({status: "loading"});
+        //console.log(Object.keys(ctrl.product()).length);
+        if(window.product === undefined || window.product.length == 0) {
+            m.request({method: "GET", url: "/api/getProduct/" + m.route.param("item")}).then(function(res){
+                if(res.length > 0){
+                    ctrl.product({status: "ok", data: res[0]})
+                } else {
+                    ctrl.product({status: "error"})
+                }
+                m.redraw();
+            });
+        } else {
+            ctrl.product({status: "ok", data: window.product[0]});
+            window.product = [];
+            m.redraw();
+        }
+
+    },
+    view: function(ctrl) {
+        return m('div', [
+            Left(ctrl),
+            Middle(ctrl),
+        ])
+    }
+};
+
+
+module.exports = Product;

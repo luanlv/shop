@@ -1,4 +1,4 @@
-@(listMenu: String, allCategory: String, listProduct: String)
+@(listMenu: String, allCategory: String, product: String)
 <!doctype html>
 <html lang="en">
     <head>
@@ -28,14 +28,14 @@
             var menu = @Html(listMenu);
             var allCategory = @Html(allCategory);
             var urls = buildUrls(allCategory);
-            var listProduct1 = [];
+            var product = [];
 
 //            setTimeout(function(){
-                listProduct1 = @Html(listProduct);
-                m.redraw();
+            product = @Html(product);
+            m.redraw();
 //            }, 0);
 
-            var demoSlide = listProduct1;
+//            var demoSlide = listProduct1.slice(2, 6);
 
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,

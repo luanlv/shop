@@ -67,4 +67,6 @@ fn.preloadImages = function(srcArray) {
     }
 }
 
+
+
 module.exports = fn;

@@ -19,6 +19,7 @@ import reactivemongo.core.commands.SumValue
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
+import play.modules.reactivemongo.json.BSONFormats._
 
 object CategoryRepo extends CategoryRepo {
   protected def categoryTube = tube.categoryTube
@@ -37,6 +38,8 @@ trait CategoryRepo {
 
   import Category.{ BSONFields => F }
 
+  def getAllCategory() = categoryTube.coll.find(BSONDocument()).cursor[BSONDocument]().collect[List]().map(Json.toJson(_))
+
   def getListSupId: Fu[List[String]] = categoryTube.coll.find(BSONDocument("sku.parent_id" -> "NONE"))
       .cursor[BSONDocument]()
       .collect[List]() map {
@@ -54,6 +57,8 @@ trait CategoryRepo {
   def findSup: Fu[List[Category]] = $find(Json.obj("sku.parent_id" -> "NONE"))
 
   def findSub: Fu[List[Category]] = $find(Json.obj("sku.parent_id" -> Json.obj("$ne" -> "NONE")))
+
+  def findParent(skuSlug: String) = $find one Json.obj("slug" -> skuSlug)
 
   def listSubBySupId(id: String): Fu[List[String]] =
     categoryTube.coll.find(BSONDocument("sku.parent_id" -> id))

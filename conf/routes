@@ -1,8 +1,8 @@
 # Accessibility
 
 
-GET /              controllers.Application.index
-
+GET   /                                controllers.Application.index
+GET   /p/:supSku/:subSku/:slug         controllers.Application.product(supSku: String, subSku: String, slug: String)
 
 GET   /login                           controllers.Auth.login
 POST  /login                           controllers.Auth.authenticate
@@ -49,6 +49,8 @@ POST     /admin/image/upload          @controllers.ImageCtrl.upload
 #API
 
 #GET      /api/getGroup/:name         controllers.API.getGroup(name: String)
+GET      /api/getProduct/:url                      controllers.API.getProduct(url: String)
+GET      /api/getProductInCategory/:urlSku         controllers.API.getProducts(urlSku: String)
 
 # Assets
 GET      /google5106a805f9682e1e.html                controllers.Assets.at(path="/public", file="google5106a805f9682e1e.html")

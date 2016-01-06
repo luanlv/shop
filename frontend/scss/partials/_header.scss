@@ -51,12 +51,14 @@
   li {
     float: left;
     a {
-      font: normal 20px 'UTMCafetaRegular';
+      font-size: 15px;
+      //font: normal 20px 'UTMCafetaRegular';
       //font-family: Cafeta;
-      //font-weight: bold;
+      font-weight: bold;
+      font-style: italic;
       height: 40px;
-      padding-left: 15px;
-      padding-right: 15px;
+      padding-left: 10px;
+      padding-right: 10px;
       display: flex;
       align-items: center;
 

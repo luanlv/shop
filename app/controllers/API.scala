@@ -1,5 +1,6 @@
 package controllers
 
+import lila.product.ProductRepo
 import play.api.data._, Forms._
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json._
@@ -12,13 +13,27 @@ import lila.common.{ LilaCookie, HTTPRequest }
 import lila.user.{ UserRepo, User => UserModel }
 import views._
 import scala.concurrent.Future
-
+import play.modules.reactivemongo.json.BSONFormats._
 
 object API extends LilaController {
 
   def getGroup(name: String) = Open { implicit ctx =>
     Env.product.ILCached.getGroupListCached(name) map {
       list => Ok(Json.toJson(list))
+    }
+  }
+
+  def getProduct(url: String) = Open { implicit ctx =>
+    ProductRepo.getOneBySlug(url).map{
+      product => Ok(Json.toJson(product))
+    }
+  }
+
+  def getProducts(category: String) = Open { implicit ctx =>
+    ProductRepo.getByCategory("sub-cate-1", 12).map {
+      products => {
+        Ok(Json.toJson(products))
+      }
     }
   }
 

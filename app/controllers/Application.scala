@@ -27,11 +27,23 @@ object Application extends LilaController{
   private def env = lila.app.Env.current
 
   def index = Action.async {
-    var products = ProductRepo.getByCategory("sub-cate-1", 12).map(Json.toJson(_)).await.toString
+    val products = ProductRepo.getByCategory("sub-cate-1", 12).map(Json.toJson(_)).await.toString
+    val allCategorys = CategoryRepo.getAllCategory().await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
         val arr = (data\"v").as[JsArray].toString
-        Ok(views.html.index.index(arr, products))
+        Ok(views.html.index.index(arr, allCategorys, products))
+      }
+    }
+  }
+
+  def product(supSku: String, subSku: String, slug: String) = Action.async {
+    val product = ProductRepo.getOneBySlug(slug).map(Json.toJson(_)).await.toString
+    val allCategorys = CategoryRepo.getAllCategory().await.toString
+    lila.setup.Env.current.setupRepo.get("listMenu").map {
+      data => {
+        val arr = (data\"v").as[JsArray].toString
+        Ok(views.html.index.product(arr, allCategorys, product))
       }
     }
   }

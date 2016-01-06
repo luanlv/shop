@@ -1,0 +1,35 @@
+var fn = require('../../core/fn.msx');
+
+var Middle =  function(ctrl){
+    var status_loading = ctrl.product().status === "loading";
+    var status_ok = ctrl.product().status === "ok";
+    return (
+        <div className="productWrap">
+            {status_loading?(
+                <div>LOADING !!!</div>
+            ):(
+                !status_ok?(
+                    <div>ERROR !!!</div>
+                ):(
+                    <div>
+                        <div className="p-top clearfix">
+                            <div className="pt-left">
+                                <img src={ctrl.product().data.info.image[0].small} alt=""/>
+                            </div>
+                            <div className="pt-right">
+                                <h1 className="name">{ctrl.product().data.core.name}</h1>
+                                <div className="msp">Mã Sản phẩm: <span>{ctrl.product().data.core.code}</span></div>
+                                <div className="price">Giá: <span>{fn.price(ctrl.product().data.core.price[0].price)} VNĐ</span></div>
+                            </div>
+                        </div>
+                        <div className="p-bot">
+
+                        </div>
+                    </div>
+                )
+            )}
+        </div>
+    )
+};
+
+module.exports = Middle;

@@ -116,6 +116,11 @@ trait ProductRepo {
 
 
   def getOneByCode(code: String): Fu[Option[Product]] = productTube.coll.find(Json.obj("core.code" -> code)).cursor[Product]().headOption
+  def getOneBySlug(slug: String): Fu[List[BSONDocument]] =
+    productTube.coll
+    .find(BSONDocument("slug" -> slug))
+    .cursor[BSONDocument]()
+    .collect[List]()
 
   def test(code: String) = productTube.coll.find(Json.obj("core.code" -> code)).cursor[Product]().collect[List]()
 

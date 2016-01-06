@@ -3,5 +3,6 @@ var Main = Main || {};
 
 Main.Home = require('./main/_home.msx');
 Main.Dashboard = require('./main/_dashboard.msx');
+Main.Product = require('./main/_product.msx');
 
 module.exports = Main;

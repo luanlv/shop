@@ -20,7 +20,7 @@ Nav.view = function(){
                 <div className="h-bot">
                     <ul className="navMenu">
                         <li><a href="#">GIỚI THIỆU</a></li>
-                        <li><a href="#" className="active">LINH KIỆN</a></li>
+                        <li><a href="/" config={m.route} className="active">LINH KIỆN</a></li>
                         <li><a href="#">SẢN PHẨM</a></li>
                         <li><a href="#">NGHIÊN CỨU</a></li>
                         <li><a href="#">DỊCH VỤ</a></li>

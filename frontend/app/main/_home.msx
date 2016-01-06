@@ -8,9 +8,43 @@ var Home = {
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
+        ctrl.products = m.prop([]);
+        ctrl.slides = m.prop([]);
         ctrl.current = 0;
-        ctrl.maxSlide = window.demoSlide.length;
-        ctrl.currentSlide(window.demoSlide[0]);
+
+        //ctrl.currentSlide(window.demoSlide[0]);
+
+        ctrl.loading = true;
+        ctrl.ok = false;
+
+        if(window.demoSlide === undefined || window.demoSlide.length == 0) {
+            m.request({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}) .then(function(res){
+                if(res.length > 0){
+                    ctrl.products(res);
+                    ctrl.slides(res.slice(2,6));
+                    ctrl.currentSlide(ctrl.slides()[0]);
+                    ctrl.maxSlide = ctrl.slides().length;
+                    ctrl.ok = true;
+                } else {
+                    ctrl.ok = false;
+                }
+                ctrl.loading = false;
+                m.redraw();
+            });
+        } else {
+            if(window.demoSlide.length > 0) {
+                ctrl.products(window.demoSlide);
+                ctrl.slides(window.demoSlide.slice(2, 6));
+                ctrl.currentSlide(ctrl.slides()[0]);
+                ctrl.maxSlide = ctrl.slides().length;
+                ctrl.ok = true;
+            } else {
+                ctrl.ok = false;
+            }
+            window.demoSlide = [];
+            ctrl.loading = false;
+            m.redraw();
+        }
         //console.log(window.demoSlide.length)
         //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
