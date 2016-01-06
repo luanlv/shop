@@ -3,6 +3,7 @@ package controllers
 import lila.product.ProductRepo
 import play.api.data._, Forms._
 import play.api.i18n.Messages.Implicits._
+import play.api.libs.concurrent.Promise
 import play.api.libs.json._
 import play.api.mvc._, Results._
 import play.api.Play.current
@@ -14,6 +15,8 @@ import lila.user.{ UserRepo, User => UserModel }
 import views._
 import scala.concurrent.Future
 import play.modules.reactivemongo.json.BSONFormats._
+//import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.duration._
 
 object API extends LilaController {
 

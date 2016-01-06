@@ -150,6 +150,32 @@ fn.buildBreadcrumb = function(urls, category, currentCategory, result){
     return fn.buildBreadcrumb(urls, category, jsonCategory.sku.slug, result);
 };
 
+fn.requestWithFeedback = function(args, bind, fn) {
+    var data = m.prop();
+    var completed = m.prop(false);
+    var complete = function() {
+        completed(true)
+    };
+    args.background = true;
+    args.config = function(xhr) {
+        xhr.timeout = 4000;
+        xhr.ontimeout = function() {
+            complete();
+            m.redraw();
+        }
+    };
+    return {
+        request: m.request(args).then(data).then(function(data){
+            if(bind !== undefined) bind(data);
+            if(fn !== undefined) fn();
+            complete();
+            m.redraw();
+        }),
+        data: data,
+        ready: completed
+    }
+};
+
 module.exports = fn;
 
 },{}],6:[function(require,module,exports){
@@ -210,7 +236,7 @@ module.exports = Dashboard;
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right.msx');
-
+var fn = require('../core/fn.msx');
 
 var Home = {
     controller: function() {
@@ -225,35 +251,25 @@ var Home = {
 
         ctrl.loading = true;
         ctrl.ok = false;
+        ctrl.setup = function(){
+            ctrl.products(ctrl.request.data());
+            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.currentSlide(ctrl.slides()[0]);
+            ctrl.maxSlide = ctrl.slides().length;
+        };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            m.request({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}) .then(function(res){
-                if(res.length > 0){
-                    ctrl.products(res);
-                    ctrl.slides(res.slice(2,6));
-                    ctrl.currentSlide(ctrl.slides()[0]);
-                    ctrl.maxSlide = ctrl.slides().length;
-                    ctrl.ok = true;
-                } else {
-                    ctrl.ok = false;
-                }
-                ctrl.loading = false;
-                m.redraw();
-            });
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.products, ctrl.setup);
         } else {
-            if(window.demoSlide.length > 0) {
-                ctrl.products(window.demoSlide);
-                ctrl.slides(window.demoSlide.slice(2, 6));
-                ctrl.currentSlide(ctrl.slides()[0]);
-                ctrl.maxSlide = ctrl.slides().length;
-                ctrl.ok = true;
-            } else {
-                ctrl.ok = false;
-            }
-            window.demoSlide = [];
-            ctrl.loading = false;
-            m.redraw();
+                ctrl.request = {
+                    ready: function () {
+                        return true
+                    },
+                    data: m.prop(window.demoSlide)
+                };
+                ctrl.setup()
         }
+        window.demoSlide = [];
         //console.log(window.demoSlide.length)
         //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
@@ -271,31 +287,32 @@ var Home = {
 
 
 module.exports = Home;
-},{"./partials/_left.msx":10,"./partials/_middle.msx":12,"./partials/_right.msx":13}],9:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":10,"./partials/_middle.msx":12,"./partials/_right.msx":13}],9:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-product.msx');
 var Right = require('./partials/_right.msx');
-
+var fn = require('../core/fn.msx');
 
 var Product = {
     controller: function() {
         var ctrl = this;
         ctrl.product = m.prop({status: "loading"});
         //console.log(Object.keys(ctrl.product()).length);
+        ctrl.setup = function(){
+            ctrl.product(ctrl.request.data())
+        };
         if(window.product === undefined || window.product.length == 0) {
-            m.request({method: "GET", url: "/api/getProduct/" + m.route.param("item")}).then(function(res){
-                if(res.length > 0){
-                    ctrl.product({status: "ok", data: res[0]})
-                } else {
-                    ctrl.product({status: "error"})
-                }
-                m.redraw();
-            });
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.product, ctrl.setup);
         } else {
-            ctrl.product({status: "ok", data: window.product[0]});
-            window.product = [];
-            m.redraw();
+            ctrl.request = {
+                ready: function () {
+                    return true
+                },
+                data: m.prop(window.product)
+            };
+            ctrl.setup();
         }
+        window.product = [];
 
     },
     view: function(ctrl) {
@@ -308,7 +325,7 @@ var Product = {
 
 
 module.exports = Product;
-},{"./partials/_left.msx":10,"./partials/_middle-product.msx":11,"./partials/_right.msx":13}],10:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":10,"./partials/_middle-product.msx":11,"./partials/_right.msx":13}],10:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 var data = require('../../core/data.js');
 
@@ -659,22 +676,22 @@ var Middle =  function(ctrl){
 
     return (
         {tag: "div", attrs: {className:"productWrap fadeIn animated"}, children: [
-            status_loading?(
-                {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
+            !ctrl.request.ready()?(
+                {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
             ):(
-                !status_ok?(
+                (ctrl.product().length < 0)?(
                     {tag: "div", attrs: {}, children: ["ERROR !!!"]}
                 ):(
                     {tag: "div", attrs: {}, children: [
-                        {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product().data.sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product().data.sku.slug}).name]}]}, 
+                        {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name]}]}, 
                         {tag: "div", attrs: {className:"p-top clearfix"}, children: [
                             {tag: "div", attrs: {className:"pt-left"}, children: [
-                                {tag: "img", attrs: {src:ctrl.product().data.info.image[0].small, alt:""}}
+                                {tag: "img", attrs: {src:ctrl.product()[0].info.image[0].small, alt:""}}
                             ]}, 
                             {tag: "div", attrs: {className:"pt-right"}, children: [
-                                {tag: "h1", attrs: {className:"name"}, children: [ctrl.product().data.core.name]}, 
-                                {tag: "div", attrs: {className:"msp"}, children: ["Mã Sản phẩm: ", {tag: "span", attrs: {}, children: [ctrl.product().data.core.code]}]}, 
-                                {tag: "div", attrs: {className:"price"}, children: ["Giá: ", {tag: "span", attrs: {}, children: [fn.price(ctrl.product().data.core.price[0].price), " VNĐ"]}]}
+                                {tag: "h1", attrs: {className:"name"}, children: [ctrl.product()[0].core.name]}, 
+                                {tag: "div", attrs: {className:"msp"}, children: ["Mã Sản phẩm: ", {tag: "span", attrs: {}, children: [ctrl.product()[0].core.code]}]}, 
+                                {tag: "div", attrs: {className:"price"}, children: ["Giá: ", {tag: "span", attrs: {}, children: [fn.price(ctrl.product()[0].core.price[0].price), " VNĐ"]}]}
                             ]}
                         ]}, 
                         {tag: "div", attrs: {className:"p-bot"}
@@ -692,8 +709,10 @@ module.exports = Middle;
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
-    return (ctrl.loading?({tag: "div", attrs: {className:"mid"}, children: ["LOADING !!!"]}):(
-        !ctrl.ok?(
+    return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
+            {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+        ]}):(
+        (ctrl.request.data().length < 1)?(
             {tag: "div", attrs: {className:"mid"}, children: [" ERROR !!!"]}
         ):(
         {tag: "div", attrs: {className:"mid"}, children: [

@@ -6,22 +6,22 @@ var Middle =  function(ctrl){
 
     return (
         <div className="productWrap fadeIn animated">
-            {status_loading?(
-                <div className="loading">LOADING !!!</div>
+            {!ctrl.request.ready()?(
+                <div class="loader">Loading...</div>
             ):(
-                !status_ok?(
+                (ctrl.product().length < 0)?(
                     <div>ERROR !!!</div>
                 ):(
                     <div>
-                        <div className="breadCrumb">{fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product().data.sku.slug, []).reverse()} <div className="current">{window.allCategory.getItemByParam({slug: ctrl.product().data.sku.slug}).name}</div></div>
+                        <div className="breadCrumb">{fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse()} <div className="current">{window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name}</div></div>
                         <div className="p-top clearfix">
                             <div className="pt-left">
-                                <img src={ctrl.product().data.info.image[0].small} alt=""/>
+                                <img src={ctrl.product()[0].info.image[0].small} alt=""/>
                             </div>
                             <div className="pt-right">
-                                <h1 className="name">{ctrl.product().data.core.name}</h1>
-                                <div className="msp">Mã Sản phẩm: <span>{ctrl.product().data.core.code}</span></div>
-                                <div className="price">Giá: <span>{fn.price(ctrl.product().data.core.price[0].price)} VNĐ</span></div>
+                                <h1 className="name">{ctrl.product()[0].core.name}</h1>
+                                <div className="msp">Mã Sản phẩm: <span>{ctrl.product()[0].core.code}</span></div>
+                                <div className="price">Giá: <span>{fn.price(ctrl.product()[0].core.price[0].price)} VNĐ</span></div>
                             </div>
                         </div>
                         <div className="p-bot">

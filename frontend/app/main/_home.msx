@@ -1,7 +1,7 @@
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right.msx');
-
+var fn = require('../core/fn.msx');
 
 var Home = {
     controller: function() {
@@ -16,35 +16,25 @@ var Home = {
 
         ctrl.loading = true;
         ctrl.ok = false;
+        ctrl.setup = function(){
+            ctrl.products(ctrl.request.data());
+            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.currentSlide(ctrl.slides()[0]);
+            ctrl.maxSlide = ctrl.slides().length;
+        };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            m.request({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}) .then(function(res){
-                if(res.length > 0){
-                    ctrl.products(res);
-                    ctrl.slides(res.slice(2,6));
-                    ctrl.currentSlide(ctrl.slides()[0]);
-                    ctrl.maxSlide = ctrl.slides().length;
-                    ctrl.ok = true;
-                } else {
-                    ctrl.ok = false;
-                }
-                ctrl.loading = false;
-                m.redraw();
-            });
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.products, ctrl.setup);
         } else {
-            if(window.demoSlide.length > 0) {
-                ctrl.products(window.demoSlide);
-                ctrl.slides(window.demoSlide.slice(2, 6));
-                ctrl.currentSlide(ctrl.slides()[0]);
-                ctrl.maxSlide = ctrl.slides().length;
-                ctrl.ok = true;
-            } else {
-                ctrl.ok = false;
-            }
-            window.demoSlide = [];
-            ctrl.loading = false;
-            m.redraw();
+                ctrl.request = {
+                    ready: function () {
+                        return true
+                    },
+                    data: m.prop(window.demoSlide)
+                };
+                ctrl.setup()
         }
+        window.demoSlide = [];
         //console.log(window.demoSlide.length)
         //ctrl.data = m.prop([]);
         //m.request({method: "GET", url: "/data1.json"}).then(function(res){
