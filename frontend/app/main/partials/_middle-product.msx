@@ -3,6 +3,7 @@ var fn = require('../../core/fn.msx');
 var Middle =  function(ctrl){
     var status_loading = ctrl.product().status === "loading";
     var status_ok = ctrl.product().status === "ok";
+
     return (
         <div className="productWrap">
             {status_loading?(
@@ -12,6 +13,7 @@ var Middle =  function(ctrl){
                     <div>ERROR !!!</div>
                 ):(
                     <div>
+                        <div className="breadCrumb">{fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product().data.sku.slug, []).reverse()} <div className="current">{window.allCategory.getItemByParam({slug: ctrl.product().data.sku.slug}).name}</div></div>
                         <div className="p-top clearfix">
                             <div className="pt-left">
                                 <img src={ctrl.product().data.info.image[0].small} alt=""/>

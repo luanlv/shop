@@ -413,6 +413,18 @@ input[type=text] {
     font-weight: bold;
     margin-bottom: 10px; }
 
+.breadCrumb {
+  margin-bottom: 20px; }
+  .breadCrumb div {
+    border-bottom: 1px solid #ddd;
+    display: inline;
+    font-weight: bold;
+    font-size: 12px; }
+  .breadCrumb div.current {
+    font-style: italic; }
+  .breadCrumb a {
+    color: #0074D9; }
+
 .pt-left {
   width: 300px;
   float: left; }

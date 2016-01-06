@@ -69,4 +69,14 @@ fn.preloadImages = function(srcArray) {
 
 
 
+fn.buildBreadcrumb = function(urls, category, currentCategory, result){
+    if(currentCategory === "NONE") {
+        result.push(<div><a href="/" config={m.route}>Trang chủ</a> / </div>);
+        return result;
+    }
+    var jsonCategory = category.getItemByParam({slug: currentCategory});
+    result.push(<div><a href={window.urls[currentCategory]} config={m.route}> {jsonCategory.name} </a>  / </div>);
+    return fn.buildBreadcrumb(urls, category, jsonCategory.sku.slug, result);
+};
+
 module.exports = fn;

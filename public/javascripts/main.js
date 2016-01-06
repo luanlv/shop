@@ -1,4 +1,4 @@
-Array.prototype.getIemtByParam = function(paramPair) {
+Array.prototype.getItemByParam = function(paramPair) {
   var key = Object.keys(paramPair)[0];
   return this.find(function(item){return ((item[key] == paramPair[key]) ? true: false)});
 }
@@ -12,7 +12,7 @@ var buildUrls = function(category){
     if(result.slug !== undefined){
       return result.slug
       } else {
-        var parentSlug = category.getIemtByParam(
+        var parentSlug = category.getItemByParam(
           {slug: slug}
         ).sku.slug;
         return parentUrl(parentSlug) + "/" + slug;

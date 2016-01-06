@@ -140,6 +140,16 @@ fn.preloadImages = function(srcArray) {
 
 
 
+fn.buildBreadcrumb = function(urls, category, currentCategory, result){
+    if(currentCategory === "NONE") {
+        result.push({tag: "div", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["Trang chủ"]}, " / "]});
+        return result;
+    }
+    var jsonCategory = category.getItemByParam({slug: currentCategory});
+    result.push({tag: "div", attrs: {}, children: [{tag: "a", attrs: {href:window.urls[currentCategory], config:m.route}, children: [" ", jsonCategory.name, " "]}, "  / "]});
+    return fn.buildBreadcrumb(urls, category, jsonCategory.sku.slug, result);
+};
+
 module.exports = fn;
 
 },{}],6:[function(require,module,exports){
@@ -646,6 +656,7 @@ var fn = require('../../core/fn.msx');
 var Middle =  function(ctrl){
     var status_loading = ctrl.product().status === "loading";
     var status_ok = ctrl.product().status === "ok";
+
     return (
         {tag: "div", attrs: {className:"productWrap"}, children: [
             status_loading?(
@@ -655,6 +666,7 @@ var Middle =  function(ctrl){
                     {tag: "div", attrs: {}, children: ["ERROR !!!"]}
                 ):(
                     {tag: "div", attrs: {}, children: [
+                        {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product().data.sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product().data.sku.slug}).name]}]}, 
                         {tag: "div", attrs: {className:"p-top clearfix"}, children: [
                             {tag: "div", attrs: {className:"pt-left"}, children: [
                                 {tag: "img", attrs: {src:ctrl.product().data.info.image[0].small, alt:""}}

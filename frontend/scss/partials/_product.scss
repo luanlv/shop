@@ -1,3 +1,19 @@
+.breadCrumb {
+  margin-bottom: 20px;
+  div {
+    border-bottom: 1px solid #ddd;
+    display: inline;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  div.current {
+    font-style: italic;
+  }
+  a {
+    color: $active-menu-level2-color;
+  }
+}
+
 .pt-left {
   width: 300px;
   float: left;
