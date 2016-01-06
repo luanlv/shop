@@ -14,10 +14,10 @@ var Right = function(ctrl){
                     Miễn phí tiền ship với đơn hàng trên 200,000Đ (HN), trên 500,000Đ (TQ)
                 </div>
             </div>
-            <div className="saleWr">
+            <div className="saleWr ">
                 <h3>SẢN PHẨM KHUYẾN MÃI</h3>
                 {(ctrl.products().length<1)?(
-                    <div>LOADING !!!</div>
+                    <div className="loading">LOADING !!!</div>
                 ):(
                     <div className="listSale">
                         {ctrl.products().map(function(item){

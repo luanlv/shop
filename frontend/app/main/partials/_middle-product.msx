@@ -5,9 +5,9 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        <div className="productWrap">
+        <div className="productWrap fadeIn animated">
             {status_loading?(
-                <div>LOADING !!!</div>
+                <div className="loading">LOADING !!!</div>
             ):(
                 !status_ok?(
                     <div>ERROR !!!</div>

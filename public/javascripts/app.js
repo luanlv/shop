@@ -658,9 +658,9 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        {tag: "div", attrs: {className:"productWrap"}, children: [
+        {tag: "div", attrs: {className:"productWrap fadeIn animated"}, children: [
             status_loading?(
-                {tag: "div", attrs: {}, children: ["LOADING !!!"]}
+                {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
             ):(
                 !status_ok?(
                     {tag: "div", attrs: {}, children: ["ERROR !!!"]}
@@ -780,10 +780,10 @@ var Middle =  function(ctrl){
                 ]}
 
             ]}, 
-            {tag: "div", attrs: {className:"productWr"}, children: [
+            {tag: "div", attrs: {className:"productWr fadeIn animated"}, children: [
                 {tag: "h3", attrs: {}, children: ["SẢN PHẨM PHẦN CỨNG"]}, 
                 (ctrl.products().length<1)?(
-                    {tag: "div", attrs: {className:"listProduct"}, children: [
+                    {tag: "div", attrs: {className:"loading"}, children: [
                         "LOADING !!!"
                     ]}
                 ):(
@@ -876,10 +876,10 @@ var Right = function(ctrl){
                     "Miễn phí tiền ship với đơn hàng trên 200,000Đ (HN), trên 500,000Đ (TQ)"
                 ]}
             ]}, 
-            {tag: "div", attrs: {className:"saleWr"}, children: [
+            {tag: "div", attrs: {className:"saleWr "}, children: [
                 {tag: "h3", attrs: {}, children: ["SẢN PHẨM KHUYẾN MÃI"]}, 
                 (ctrl.products().length<1)?(
-                    {tag: "div", attrs: {}, children: ["LOADING !!!"]}
+                    {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
                 ):(
                     {tag: "div", attrs: {className:"listSale"}, children: [
                         ctrl.products().map(function(item){
