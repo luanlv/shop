@@ -1,9 +1,11 @@
 # Accessibility
 
 
-GET   /                                controllers.Application.index
-GET   /p/:slug         controllers.Application.product(slug: String)
-GET   /c/:slug         controllers.Application.category(slug: String)
+GET   /                                 controllers.Application.index
+GET   /p/:slug                          controllers.Application.product(slug: String)
+GET   /c/:slug1                          controllers.Application.category(slug1: String, slug2: String ?="", slug3: String ?="")
+GET   /c/:slug2/:slug1                  controllers.Application.category(slug1: String, slug2: String, slug3: String ?= "")
+GET   /c/:slug3/:slug2/:slug1           controllers.Application.category(slug1: String, slug2: String, slug3: String)
 
 GET   /login                           controllers.Auth.login
 POST  /login                           controllers.Auth.authenticate

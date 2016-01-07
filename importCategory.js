@@ -65,9 +65,9 @@ var categoryLevel3 = [
     {slug: "anh-sang", name: "Ánh sáng", description: "", sku: {"parent_id" : "anh-sang-hong-ngoai", "name" : "Category ??", "slug" : "anh-sang-hong-ngoai"}},
     {slug: "hong-ngoai", name: "Hồng ngoại", description: "", sku: {"parent_id" : "anh-sang-hong-ngoai", "name" : "Category ??", "slug" : "anh-sang-hong-ngoai"}},
 
-    {slug: "gia-toc", name: "Gia tốc", description: "", sku: {"parent_id" : "chuye-ndong-vi-tri", "name" : "Category ??", "slug" : "chuye-ndong-vi-tri"}},
-    {slug: "pir", name: "PIR", description: "", sku: {"parent_id" : "chuye-ndong-vi-tri", "name" : "Category ??", "slug" : "chuye-ndong-vi-tri"}},
-    {slug: "con-quay-hoi-chuyen", name: "Con quay hồi chuyển", description: "", sku: {"parent_id" : "chuye-ndong-vi-tri", "name" : "Category ??", "slug" : "chuye-ndong-vi-tri"}},
+    {slug: "gia-toc", name: "Gia tốc", description: "", sku: {"parent_id" : "chuyen-dong-vi-tri", "name" : "Category ??", "slug" : "chuyen-dong-vi-tri"}},
+    {slug: "pir", name: "PIR", description: "", sku: {"parent_id" : "chuyen-dong-vi-tri", "name" : "Category ??", "slug" : "chuyen-dong-vi-tri"}},
+    {slug: "con-quay-hoi-chuyen", name: "Con quay hồi chuyển", description: "", sku: {"parent_id" : "chuyen-dong-vi-tri", "name" : "Category ??", "slug" : "chuyen-dong-vi-tri"}},
     {slug: "rung", name: "Rung", description: "", sku: {"parent_id" : "chuyen-dong-vi-tri", "name" : "Category ??", "slug" : "chuyen-dong-vi-tri"}},
     {slug: "cham", name: "Chạm", description: "", sku: {"parent_id" : "chuyen-dong-vi-tri", "name" : "Category ??", "slug" : "chuyen-dong-vi-tri"}},
 
@@ -77,8 +77,8 @@ var categoryLevel3 = [
     {slug: "tich-hop", name: "Tích hợp", description: "", sku: {"parent_id" : "nhiet-do-do-am-ap-suat", "name" : "Category ??", "slug" : "nhiet-do-do-am-ap-suat"}},
 
 
-    {slug: "motor-controllers-driver", name: "Motor Controllers & Driver", description: "", sku: {"parent_id" : "driver-otor-control", "name" : "Category ??", "slug" : "driver-otor-control"}},
-    {slug: "darlington-arrays", name: "Darlington Arrays", description: "", sku: {"parent_id" : "driver-otor-control", "name" : "Category ??", "slug" : "driver-otor-control"}},
+    {slug: "motor-controllers-driver", name: "Motor Controllers & Driver", description: "", sku: {"parent_id" : "driver-motor-control", "name" : "Category ??", "slug" : "driver-motor-control"}},
+    {slug: "darlington-arrays", name: "Darlington Arrays", description: "", sku: {"parent_id" : "driver-motor-control", "name" : "Category ??", "slug" : "driver-motor-control"}},
     {slug: "led-drivers", name: "LED Drivers", description: "", sku: {"parent_id" : "driver-motor-control", "name" : "Category ??", "slug" : "driver-motor-control"}},
 
     {slug: "adc", name: "ADC", description: "", sku: {"parent_id" : "adc-dac", "name" : "Category ??", "slug" : "adc-dac"}},
@@ -282,11 +282,26 @@ var categoryLevel1 = [
     {slug: "phu-kien-dung-cu", name: "PHỤ KIỆN & DỤNG CỤ", description: "", sku: {"parent_id" : "NONE", "name" : "Category ??", "slug" : "NONE"}},
 ];
 
+var allCategory =  categoryLevel1.concat(categoryLevel2, categoryLevel3);
 
+Array.prototype.getItemByParam = function(paramPair) {
+    var key = Object.keys(paramPair)[0];
+    return this.find(function(item){return ((item[key] == paramPair[key]) ? true: false)});
+}
+
+var findUrl = function(slug){
+    if(slug === "NONE") return "/c";
+    var parentSlug = allCategory.getItemByParam(
+        {slug: slug}
+    );
+    return findUrl(parentSlug.sku.slug) + '/' + slug
+}
 
 
 var arr1 = categoryLevel3.map(function(js){
-    return {title: js.name, http: "/c/" + js.slug, parent: js.sku.slug}
+    var url = findUrl(js.slug);
+    print(url);
+    return {title: js.name, http: url, parent: js.sku.slug}
 });
 
 var arr2 = categoryLevel2.map(function(js){
@@ -294,9 +309,9 @@ var arr2 = categoryLevel2.map(function(js){
         return value.parent === js.slug;
     });
     if(children.length > 0) {
-        return {title: js.name, http: "/c/" + js.slug, parent: js.sku.slug, children: children}
+        return {title: js.name, http: findUrl(js.slug), parent: js.sku.slug, children: children}
     } else {
-        return {title: js.name, http: "/c/" + js.slug, parent: js.sku.slug}
+        return {title: js.name, http: findUrl(js.slug), parent: js.sku.slug}
     }
 })
 
@@ -304,7 +319,7 @@ var arr3 = categoryLevel1.map(function(js){
     var children = arr2.filter(function(value){
         return value.parent === js.slug;
     });
-    return {title: js.name, http: "/c/" + js.slug, parent: js.sku.slug , children: children}
+    return {title: js.name, http: findUrl(js.slug), parent: js.sku.slug , children: children}
 })
 
 

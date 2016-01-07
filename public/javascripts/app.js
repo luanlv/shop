@@ -231,8 +231,7 @@ var Category = {
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            console.log(m.route.param('category'))
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category')}, ctrl.products, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category1')}, ctrl.products, ctrl.setup);
         } else {
                 ctrl.request = {
                     ready: function () {
@@ -821,7 +820,7 @@ var Middle =  function(ctrl){
 
             {tag: "div", attrs: {className:"categoryWr "}, children: [
                 {tag: "div", attrs: {className:"clearfix"}, children: [
-                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category')}).name]}, 
+                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category1')}).name]}, 
                     {tag: "div", attrs: {className:"fr"}, children: [
                         "Sắp xếp sản phẩm:", 
                         {tag: "select", attrs: {class:"select", id:"sortMode"}, children: [

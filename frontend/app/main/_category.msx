@@ -24,8 +24,7 @@ var Category = {
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            console.log(m.route.param('category'))
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category')}, ctrl.products, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category1')}, ctrl.products, ctrl.setup);
         } else {
                 ctrl.request = {
                     ready: function () {

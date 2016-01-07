@@ -94,7 +94,7 @@ var Middle =  function(ctrl){
 
             <div className="categoryWr ">
                 <div className="clearfix">
-                    <h3>{window.allCategory.getItemByParam({slug: m.route.param('category')}).name}</h3>
+                    <h3>{window.allCategory.getItemByParam({slug: m.route.param('category1')}).name}</h3>
                     <div className="fr">
                         Sắp xếp sản phẩm:
                         <select class="select" id="sortMode">
