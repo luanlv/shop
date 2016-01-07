@@ -9,6 +9,11 @@ window.Footer = require('./_footer.msx');
 
 m.mount(document.querySelector('#header'), Nav);
 
+window.routeState = {
+  change: true,
+  prevUrl: m.route()
+};
+
 
 
 

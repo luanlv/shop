@@ -16,7 +16,10 @@ var Right = function(ctrl){
             </div>
             <div className="saleWr ">
                 <h3>SẢN PHẨM KHUYẾN MÃI</h3>
-                {(ctrl.products()[0].value.length<1)?(
+                {
+                    (!ctrl.request.ready()?(<div className="mid">
+                        <div class="loader">Loading...</div>
+                    </div>):((ctrl.products()[0].value.length<1)?(
                     <div className="loading">LOADING !!!</div>
                 ):(
                     <div className="listSale">
@@ -40,7 +43,7 @@ var Right = function(ctrl){
                             )
                         })}
                     </div>
-                )}
+                )))}
             </div>
         </div>
     )

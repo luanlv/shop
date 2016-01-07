@@ -44,12 +44,12 @@ Nav.view = function(){
                 ]}, 
                 {tag: "div", attrs: {className:"h-bot"}, children: [
                     {tag: "ul", attrs: {className:"navMenu"}, children: [
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"#"}, children: ["GIỚI THIỆU"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["GIỚI THIỆU"]}]}, 
                         {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route, className:"active"}, children: ["LINH KIỆN"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"#"}, children: ["SẢN PHẨM"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"#"}, children: ["NGHIÊN CỨU"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"#"}, children: ["DỊCH VỤ"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"#"}, children: ["LIÊN HỆ"]}]}
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["SẢN PHẨM"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["NGHIÊN CỨU"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["DỊCH VỤ"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["LIÊN HỆ"]}]}
                     ]}
                 ]}
             ]}
@@ -88,6 +88,9 @@ fn.price = function(price){
     var priceArray = priceString.split( /(?=(?:...)*$)/ );
     return priceArray.join(',');
 };
+
+fn.cache = undefined;
+fn.url = m.route()
 
 fn.createMenu = function(menuJson, level){
     return m('ul.level' + level, [
@@ -130,6 +133,19 @@ fn.createMenu = function(menuJson, level){
     ])
 };
 
+fn.runCreateMenu = function(menuJson, level){
+    if(fn.url !== m.route()){
+        fn.url = m.route();
+        fn.cache = undefined;
+    };
+    if(fn.cache !== undefined){
+        return fn.cache;
+    } else {
+        fn.cache = fn.createMenu(menuJson, level)
+        return fn.cache;
+    }
+};
+
 fn.preloadImages = function(srcArray) {
     for (var i = 0, len = srcArray.length; i < len; i++) {
         var img = new Image();
@@ -137,7 +153,7 @@ fn.preloadImages = function(srcArray) {
         img.style.display = 'none';
         document.body.appendChild(img);
     }
-}
+};
 
 
 
@@ -177,6 +193,7 @@ fn.requestWithFeedback = function(args, bind, fn) {
     }
 };
 
+
 module.exports = fn;
 
 },{}],6:[function(require,module,exports){
@@ -190,6 +207,11 @@ window.Main = require('./_main.msx');
 window.Footer = require('./_footer.msx');
 
 m.mount(document.querySelector('#header'), Nav);
+
+window.routeState = {
+  change: true,
+  prevUrl: m.route()
+};
 
 
 
@@ -317,20 +339,15 @@ var Home = {
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
             ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductsForIndex"}, ctrl.products, ctrl.setup);
         } else {
-                ctrl.request = {
-                    ready: function () {
-                        return true
-                    },
-                    data: m.prop(window.demoSlide)
-                };
-                ctrl.setup()
+            ctrl.request = {
+                ready: function () {
+                    return true
+                },
+                data: m.prop(window.demoSlide)
+            };
+            ctrl.setup()
         }
         window.demoSlide = [];
-        //console.log(window.demoSlide.length)
-        //ctrl.data = m.prop([]);
-        //m.request({method: "GET", url: "/data1.json"}).then(function(res){
-        //  ctrl.data(res.data)
-        //});
     },
     view: function(ctrl) {
         return m('div', [
@@ -391,335 +408,9 @@ var Left = function(ctrl){
         config: function(){
 
         }
-    }, m('#sideMenu', fn.createMenu(window.menu, 1)))
+    }, m('#sideMenu', fn.runCreateMenu(window.menu, 1)))
 };
 
-
-var menu = [
-    {
-        "title" : "SẢN PHẨM PHẦN CỨNG",
-        "http" : "http://localhost:9000/",
-        "children" : [
-            {
-                "title" : "cBUS",
-                "http" : "http://localhost:9000/z",
-                "children": [
-                    {
-                        "title" : "OpAmp & Comparator",
-                        "http" : "http://localhost:9000/z/1"
-                    },
-                    {
-                        "title" : "Instrumentation Amplifier",
-                        "http" : "http://localhost:9000/z/2"
-                    },
-                    {
-                        "title" : "OpAmp",
-                        "http" : "http://localhost:9000/z/3"
-                    }, {
-                        "title" : "Cuộn cảm",
-                        "http" : "http://localhost:9000/z/4"
-                    }
-                ]
-            },
-            {
-                "title" : "Development Board",
-                "http" : "http://localhost:9000/2"
-            }
-        ]
-    },
-    {
-        "title" : "MODULE",
-        "http" : "http://localhost:9000/dashboard",
-        "children" : [
-            {
-                "title" : "Interface Converter",
-                "http" : "http://localhost:9000/dashboard/1",
-                "children" : [
-                    {
-                        "title" : "SD / MicroSD Card",
-                        "http" : "http://localhost:9000/dashboard/1/1"
-                    },
-                    {
-                        "title" : "Bluetooth",
-                        "http" : "http://localhost:9000/dashboard/1/2"
-                    },
-                    {
-                        "title" : "Bluetooth  2",
-                        "http" : "http://localhost:9000/dashboard/1/3"
-                    }
-                ]
-            },
-
-            {
-                "title" : "Motor Driver",
-                "http" : "http://localhost:9000/dashboard/2",
-                "children" : [
-                    {
-                        "title" : "DC Motor",
-                        "http" : "http://localhost:9000/dashboard/2/1"
-                    },   {
-                        "title" : "Audio/Codec",
-                        "http" : "http://localhost:9000/dashboard/2/2"
-                    },
-                    {
-                        "title" : "Realtime Clock",
-                        "http" : "http://localhost:9000/dashboard/2/3"
-                    }
-                ]
-            },
-            {
-                "title": "Wireless",
-                "http" : "http://localhost:9000/dashboard/3"
-            }
-        ]
-    },
-
-    {
-        "title" : "VI ĐIỀU KHIỂN",
-        "http" : "http://localhost:9000/product",
-        "children" : [
-            {
-                "title" : "Atmel",
-                "http" : "http://localhost:9000/product/1",
-                "children" : [
-                    {
-                        "title" : "Microchip",
-                        "http" : "http://localhost:9000/product/1/1"
-                    },
-                    {
-                        "title" : "STMicroelectronics",
-                        "http" : "http://localhost:9000/product/1/2"
-                    },
-                    {
-                        "title" : "Nuvoton",
-                        "http" : "http://localhost:9000/product/1/3"
-                    },
-                    {
-                        "title" : "STM32 ",
-                        "http" : "http://localhost:9000/product/1/4"
-                    }
-                ]
-            },
-
-            {
-                "title" : "Ánh sáng / Hồng ngoại",
-                "http" : "http://localhost:9000/product/2",
-                "children" : [
-                    {
-                        "title" : "Gia tốc",
-                        "http" : "http://localhost:9000/product/2/1"
-                    },   {
-                        "title" : "PIR",
-                        "http" : "http://localhost:9000/product/2/2"
-                    },
-                    {
-                        "title" : "Con quay hồi chuyển",
-                        "http" : "http://localhost:9000/product/2/3"
-                    }
-                ]
-            },
-            ,
-            {
-                "title": "Power Supply",
-                "http" : "http://localhost:9000/product/3"
-            }
-        ]
-    },
-    {
-        "title" : "CẢM BIẾN",
-        "http" : "http://localhost:9000/cambien",
-        "children" : [
-            {
-                "title" : "Atmel",
-                "http" : "http://localhost:9000/cambien/1",
-                "children" : [
-                    {
-                        "title" : "Microchip",
-                        "http" : "http://localhost:9000/cambien/1/1"
-                    },
-                    {
-                        "title" : "STMicroelectronics",
-                        "http" : "http://localhost:9000/cambien/1/2"
-                    },
-                    {
-                        "title" : "Nuvoton",
-                        "http" : "http://localhost:9000/cambien/1/3"
-                    },
-                    {
-                        "title" : "STM32 ",
-                        "http" : "http://localhost:9000/cambien/1/4"
-                    }
-                ]
-            },
-
-            {
-                "title" : "Ánh sáng",
-                "http" : "http://localhost:9000/hongngoai/2",
-                "children" : [
-                    {
-                        "title" : "Gia tốc",
-                        "http" : "http://localhost:9000/hongngoai/2/1"
-                    },   {
-                        "title" : "PIR",
-                        "http" : "http://localhost:9000/hongngoai/2/2"
-                    }
-                ]
-            },
-            {
-                "title" : "Hồng ngoại",
-                "http" : "http://localhost:9000/hongngoai/2",
-                "children" : [
-                    {
-                        "title" : "Gia tốc",
-                        "http" : "http://localhost:9000/hongngoai/2/1"
-                    },   {
-                        "title" : "PIR",
-                        "http" : "http://localhost:9000/hongngoai/2/2"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "title" : "IC",
-        "http" : "http://localhost:9000/ic",
-        "children" : [
-            {
-                "title" : "Atmel",
-                "http" : "http://localhost:9000/ic/1",
-                "children" : [
-                    {
-                        "title" : "Microchip",
-                        "http" : "http://localhost:9000/ic/1/1"
-                    },
-                    {
-                        "title" : "STMicroelectronics",
-                        "http" : "http://localhost:9000/ic/1/2"
-                    },
-                    {
-                        "title" : "Nuvoton",
-                        "http" : "http://localhost:9000/ic/1/3"
-                    },
-                    {
-                        "title" : "STM32 ",
-                        "http" : "http://localhost:9000/ic/1/4"
-                    }
-                ]
-            },
-
-            {
-                "title" : "Ánh sáng / Hồng ngoại",
-                "http" : "http://localhost:9000/anhsang/2",
-                "children" : [
-                    {
-                        "title" : "Gia tốc",
-                        "http" : "http://localhost:9000/anhsang/2/1"
-                    },   {
-                        "title" : "PIR",
-                        "http" : "http://localhost:9000/anhsang/2/2"
-                    },
-                    {
-                        "title" : "Con quay hồi chuyển",
-                        "http" : "http://localhost:9000/anhsang/2/3"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "title" : "LINH KIỆN CƠ BẢN",
-        "http" : "http://localhost:9000/linhkien",
-        "children" : [
-            {
-                "title" : "Atmel",
-                "http" : "http://localhost:9000/linhkien/1",
-                "children" : [
-                    {
-                        "title" : "Microchip",
-                        "http" : "http://localhost:9000/linhkien/1/1"
-                    },
-                    {
-                        "title" : "STMicroelectronics",
-                        "http" : "http://localhost:9000/linhkien/1/2"
-                    },
-                    {
-                        "title" : "Nuvoton",
-                        "http" : "http://localhost:9000/linhkien/1/3"
-                    },
-                    {
-                        "title" : "STM32 ",
-                        "http" : "http://localhost:9000/linhkien/1/4"
-                    }
-                ]
-            },
-
-            {
-                "title" : "Ánh sáng / Hồng ngoại",
-                "http" : "http://localhost:9000/linhkien/2",
-                "children" : [
-                    {
-                        "title" : "Gia tốc",
-                        "http" : "http://localhost:9000/linhkien/2/1"
-                    },   {
-                        "title" : "PIR",
-                        "http" : "http://localhost:9000/linhkien/2/2"
-                    },
-                    {
-                        "title" : "Con quay hồi chuyển",
-                        "http" : "http://localhost:9000/linhkien/2/3"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "title" : "PHỤ KIỆN & DỤNG CỤ",
-        "http" : "http://localhost:9000/phukien",
-        "children" : [
-            {
-                "title" : "Atmel",
-                "http" : "http://localhost:9000/phukien/1",
-                "children" : [
-                    {
-                        "title" : "Microchip",
-                        "http" : "http://localhost:9000/phukien/1/1"
-                    },
-                    {
-                        "title" : "STMicroelectronics",
-                        "http" : "http://localhost:9000/phukien/1/2"
-                    },
-                    {
-                        "title" : "Nuvoton",
-                        "http" : "http://localhost:9000/phukien/1/3"
-                    },
-                    {
-                        "title" : "STM32 ",
-                        "http" : "http://localhost:9000/phukien/1/4"
-                    }
-                ]
-            },
-
-            {
-                "title" : "Ánh sáng / Hồng ngoại",
-                "http" : "http://localhost:9000/phukien/2",
-                "children" : [
-                    {
-                        "title" : "Gia tốc",
-                        "http" : "http://localhost:9000/phukien/2/1"
-                    },   {
-                        "title" : "PIR",
-                        "http" : "http://localhost:9000/phukien/2/2"
-                    },
-                    {
-                        "title" : "Con quay hồi chuyển",
-                        "http" : "http://localhost:9000/phukien/2/3"
-                    }
-                ]
-            }
-        ]
-    }
-
-];
 
 
 module.exports = Left;
@@ -1105,7 +796,10 @@ var Right = function(ctrl){
             ]}, 
             {tag: "div", attrs: {className:"saleWr "}, children: [
                 {tag: "h3", attrs: {}, children: ["SẢN PHẨM KHUYẾN MÃI"]}, 
-                (ctrl.products()[0].value.length<1)?(
+                
+                    (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
+                        {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+                    ]}):((ctrl.products()[0].value.length<1)?(
                     {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
                 ):(
                     {tag: "div", attrs: {className:"listSale"}, children: [
@@ -1129,7 +823,7 @@ var Right = function(ctrl){
                             )
                         })
                     ]}
-                )
+                )))
             ]}
         ]}
     )
