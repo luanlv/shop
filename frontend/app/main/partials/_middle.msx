@@ -9,7 +9,6 @@ var Middle =  function(ctrl){
         ):(
         <div className="mid">
             <div className="slider clearfix">
-
                 <div className="sliderWr"
                      config={
                         function(el, isInited){
@@ -89,80 +88,42 @@ var Middle =  function(ctrl){
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div className="productWr">
-                <h3>SẢN PHẨM PHẦN CỨNG</h3>
-                {(ctrl.products().length<1)?(
-                    <div className="loading">
-                        LOADING !!!
-                    </div>
-                ):(
-                    <div className="listProduct clearfix">
-                        {ctrl.products().map(function(item){
-                            return (
 
+            {ctrl.products().map(function(listProducts){
+                return (
+                    <div className="productWr">
+                        <h3>{listProducts.id}</h3>
+                            <div className="listProduct clearfix">
+                                {listProducts.value.map(function(item){
+                                    return (
+                                        <div className="itemWr">
+                                            <a href={("/p/" + item.slug)} config={m.route}>
+                                                <div className="img-item bo-5">
+                                                    <img class="bo-5" src={item.info.image[0].small} alt=""/>
+                                                </div>
 
-                                    <div className="itemWr">
-                                        <a href={("/p/" + item.slug)} config={m.route}>
-                                        <div className="img-item bo-5">
-                                            <img class="bo-5" src={item.info.image[0].small} alt=""/>
-                                        </div>
-
-                                        <div className="info-item">
-                                            <div className="name-item" >
-                                                {item.core.name}
+                                                <div className="info-item">
+                                                    <div className="name-item" >
+                                                        {item.core.name}
+                                                    </div>
+                                                    <div className="info-extra-item">
+                                                        <span>Bán lẻ:</span>
+                                                        <div className="price-item">{fn.price(item.core.price[0].price)} Đ</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <div className="side-info">
+                                                {m.trust(item.extra.note)}
                                             </div>
-                                            <div className="info-extra-item">
-                                                <span>Bán lẻ:</span>
-                                                <div className="price-item">{fn.price(item.core.price[0].price)} Đ</div>
-                                            </div>
                                         </div>
-                                        </a>
-                                        <div className="side-info">
-                                            {m.trust(item.extra.note)}
-                                        </div>
-                                    </div>
-                            )
-                        })}
-                    </div>
-                )}
-            </div>
+                                    )
+                                })}
+                            </div>
 
-            <div className="productWr">
-                <h3>MODULE</h3>
-                {(ctrl.products().length<1)?(
-                    <div className="listProduct">
-                        LOADING !!!
                     </div>
-                ):(
-                    <div className="listProduct clearfix">
-                        {ctrl.products().map(function(item){
-                            return (
-                                <div className="itemWr">
-                                    <div className="img-item">
-                                        <img src={item.info.image[0].small} alt=""/>
-                                    </div>
-
-                                    <div className="info-item">
-                                        <div className="name-item" >
-                                            {item.core.name}
-                                        </div>
-                                        <div className="info-extra-item">
-                                            <span>Bán lẻ:</span>
-                                            <div className="price-item">{fn.price(item.core.price[0].price)} Đ</div>
-                                        </div>
-                                    </div>
-                                    <div className="side-info">
-                                        {m.trust(item.extra.note)}
-                                    </div>
-                                </div>
-
-                            )
-                        })}
-                    </div>
-                )}
-            </div>
+                )
+            })}
 
         </div>
         )

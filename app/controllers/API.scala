@@ -33,11 +33,20 @@ object API extends LilaController {
   }
 
   def getProducts(category: String) = Open { implicit ctx =>
-    ProductRepo.getByCategory("sub-cate-1", 12).map {
+    ProductRepo.getByCategory(category, 12).map {
       products => {
         Ok(Json.toJson(products))
       }
     }
+  }
+
+  def getProductsForIndex = Open { implicit  ctx =>
+    val supIds = Env.product.cateCached.getListSupId.await
+    val result = supIds.map{ item => {
+        Json.obj("id" -> item, "value" -> ProductRepo.getByCategory(item, 12).map(products => Json.toJson(products)).await)
+      }
+    }
+    Ok(Json.toJson(result)).fuccess
   }
 
 }

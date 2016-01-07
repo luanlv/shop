@@ -52,6 +52,7 @@ POST     /admin/image/upload          @controllers.ImageCtrl.upload
 #GET      /api/getGroup/:name         controllers.API.getGroup(name: String)
 GET      /api/getProduct/:url                      controllers.API.getProduct(url: String)
 GET      /api/getProductInCategory/:urlSku         controllers.API.getProducts(urlSku: String)
+GET      /api/getProductsForIndex                  controllers.API.getProductsForIndex()
 
 # Assets
 GET      /google5106a805f9682e1e.html                controllers.Assets.at(path="/public", file="google5106a805f9682e1e.html")

@@ -6,7 +6,6 @@ var fn = require('../core/fn.msx');
 var Category = {
     controller: function() {
         var ctrl = this;
-        console.log("ZZZZZZz")
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
@@ -25,7 +24,8 @@ var Category = {
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.products, ctrl.setup);
+            console.log(m.route.param('category'))
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category')}, ctrl.products, ctrl.setup);
         } else {
                 ctrl.request = {
                     ready: function () {

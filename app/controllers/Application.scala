@@ -27,12 +27,16 @@ object Application extends LilaController{
   private def env = lila.app.Env.current
 
   def index = Action.async {
-    val products = ProductRepo.getByCategory("sub-cate-1", 12).map(Json.toJson(_)).await.toString
+    val supIds = Env.product.cateCached.getListSupId.await
+    val products = supIds.map{ item => {
+      Json.obj("id" -> item, "value" -> ProductRepo.getByCategory(item, 12).map(products => Json.toJson(products)).await)
+      }
+    }
     val allCategorys = CategoryRepo.getAllCategory().await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
         val arr = (data\"v").as[JsArray].toString
-        Ok(views.html.index.index(arr, allCategorys, products))
+        Ok(views.html.index.index(arr, allCategorys, Json.toJson(products).toString))
       }
     }
   }
@@ -49,7 +53,7 @@ object Application extends LilaController{
   }
 
   def category(slug: String) = Action.async {
-    val products = ProductRepo.getByCategory("sub-cate-1", 12).map(Json.toJson(_)).await.toString
+    val products = ProductRepo.getByCategory("arduino", 12).map(Json.toJson(_)).await.toString
     val allCategorys = CategoryRepo.getAllCategory().await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {

@@ -213,7 +213,6 @@ var fn = require('../core/fn.msx');
 var Category = {
     controller: function() {
         var ctrl = this;
-        console.log("ZZZZZZz")
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
@@ -232,7 +231,8 @@ var Category = {
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.products, ctrl.setup);
+            console.log(m.route.param('category'))
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category')}, ctrl.products, ctrl.setup);
         } else {
                 ctrl.request = {
                     ready: function () {
@@ -260,7 +260,7 @@ var Category = {
 
 
 module.exports = Category;
-},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-category.msx":12,"./partials/_right.msx":15}],8:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-category.msx":12,"./partials/_right.msx":16}],8:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right.msx');
@@ -289,10 +289,10 @@ var Dashboard = {
 };
 
 module.exports = Dashboard;
-},{"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right.msx":15}],9:[function(require,module,exports){
+},{"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right.msx":16}],9:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
-var Right = require('./partials/_right.msx');
+var Right = require('./partials/_right-tmp.msx');
 var fn = require('../core/fn.msx');
 
 var Home = {
@@ -310,13 +310,13 @@ var Home = {
         ctrl.ok = false;
         ctrl.setup = function(){
             ctrl.products(ctrl.request.data());
-            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.slides(ctrl.request.data()[0].value.slice(2, 6));
             ctrl.currentSlide(ctrl.slides()[0]);
             ctrl.maxSlide = ctrl.slides().length;
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + "sub-cate-1"}, ctrl.products, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductsForIndex"}, ctrl.products, ctrl.setup);
         } else {
                 ctrl.request = {
                     ready: function () {
@@ -344,7 +344,7 @@ var Home = {
 
 
 module.exports = Home;
-},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right.msx":15}],10:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right-tmp.msx":15}],10:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-product.msx');
 var Right = require('./partials/_right.msx');
@@ -382,7 +382,7 @@ var Product = {
 
 
 module.exports = Product;
-},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-product.msx":13,"./partials/_right.msx":15}],11:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-product.msx":13,"./partials/_right.msx":16}],11:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 var data = require('../../core/data.js');
 
@@ -958,7 +958,6 @@ var Middle =  function(ctrl){
         ):(
         {tag: "div", attrs: {className:"mid"}, children: [
             {tag: "div", attrs: {className:"slider clearfix"}, children: [
-
                 {tag: "div", attrs: {className:"sliderWr", 
                      config:
                         function(el, isInited){
@@ -1038,80 +1037,42 @@ var Middle =  function(ctrl){
                         ]}
                     ]}
                 ]}
-
             ]}, 
-            {tag: "div", attrs: {className:"productWr"}, children: [
-                {tag: "h3", attrs: {}, children: ["SẢN PHẨM PHẦN CỨNG"]}, 
-                (ctrl.products().length<1)?(
-                    {tag: "div", attrs: {className:"loading"}, children: [
-                        "LOADING !!!"
-                    ]}
-                ):(
-                    {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
-                        ctrl.products().map(function(item){
-                            return (
 
+            ctrl.products().map(function(listProducts){
+                return (
+                    {tag: "div", attrs: {className:"productWr"}, children: [
+                        {tag: "h3", attrs: {}, children: [listProducts.id]}, 
+                            {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
+                                listProducts.value.map(function(item){
+                                    return (
+                                        {tag: "div", attrs: {className:"itemWr"}, children: [
+                                            {tag: "a", attrs: {href:("/p/" + item.slug), config:m.route}, children: [
+                                                {tag: "div", attrs: {className:"img-item bo-5"}, children: [
+                                                    {tag: "img", attrs: {class:"bo-5", src:item.info.image[0].small, alt:""}}
+                                                ]}, 
 
-                                    {tag: "div", attrs: {className:"itemWr"}, children: [
-                                        {tag: "a", attrs: {href:("/p/" + item.slug), config:m.route}, children: [
-                                        {tag: "div", attrs: {className:"img-item bo-5"}, children: [
-                                            {tag: "img", attrs: {class:"bo-5", src:item.info.image[0].small, alt:""}}
-                                        ]}, 
-
-                                        {tag: "div", attrs: {className:"info-item"}, children: [
-                                            {tag: "div", attrs: {className:"name-item"}, children: [
-                                                item.core.name
+                                                {tag: "div", attrs: {className:"info-item"}, children: [
+                                                    {tag: "div", attrs: {className:"name-item"}, children: [
+                                                        item.core.name
+                                                    ]}, 
+                                                    {tag: "div", attrs: {className:"info-extra-item"}, children: [
+                                                        {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
+                                                        {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
+                                                    ]}
+                                                ]}
                                             ]}, 
-                                            {tag: "div", attrs: {className:"info-extra-item"}, children: [
-                                                {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
-                                                {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
+                                            {tag: "div", attrs: {className:"side-info"}, children: [
+                                                m.trust(item.extra.note)
                                             ]}
                                         ]}
-                                        ]}, 
-                                        {tag: "div", attrs: {className:"side-info"}, children: [
-                                            m.trust(item.extra.note)
-                                        ]}
-                                    ]}
-                            )
-                        })
+                                    )
+                                })
+                            ]}
+
                     ]}
                 )
-            ]}, 
-
-            {tag: "div", attrs: {className:"productWr"}, children: [
-                {tag: "h3", attrs: {}, children: ["MODULE"]}, 
-                (ctrl.products().length<1)?(
-                    {tag: "div", attrs: {className:"listProduct"}, children: [
-                        "LOADING !!!"
-                    ]}
-                ):(
-                    {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
-                        ctrl.products().map(function(item){
-                            return (
-                                {tag: "div", attrs: {className:"itemWr"}, children: [
-                                    {tag: "div", attrs: {className:"img-item"}, children: [
-                                        {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
-                                    ]}, 
-
-                                    {tag: "div", attrs: {className:"info-item"}, children: [
-                                        {tag: "div", attrs: {className:"name-item"}, children: [
-                                            item.core.name
-                                        ]}, 
-                                        {tag: "div", attrs: {className:"info-extra-item"}, children: [
-                                            {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
-                                            {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
-                                        ]}
-                                    ]}, 
-                                    {tag: "div", attrs: {className:"side-info"}, children: [
-                                        m.trust(item.extra.note)
-                                    ]}
-                                ]}
-
-                            )
-                        })
-                    ]}
-                )
-            ]}
+            })
 
         ]}
         )
@@ -1121,6 +1082,57 @@ var Middle =  function(ctrl){
 
 module.exports = Middle;
 },{"../../core/fn.msx":5}],15:[function(require,module,exports){
+var fn = require('../../core/fn.msx');
+
+var Right = function(ctrl){
+    return (
+        {tag: "div", attrs: {className:"right"}, children: [
+            {tag: "div", attrs: {className:"notify"}, children: [
+                {tag: "div", attrs: {className:"notify-header"}, children: [
+                    "THÔNG BÁO"
+                ]}, 
+                {tag: "div", attrs: {className:"notify-body"}, children: [
+                    "- Ship nội thành: 10,000Đ -", 
+                    {tag: "br", attrs: {}}, 
+                    {tag: "br", attrs: {}}, 
+                    "Miễn phí tiền ship với đơn hàng trên 200,000Đ (HN), trên 500,000Đ (TQ)"
+                ]}
+            ]}, 
+            {tag: "div", attrs: {className:"saleWr "}, children: [
+                {tag: "h3", attrs: {}, children: ["SẢN PHẨM KHUYẾN MÃI"]}, 
+                (ctrl.products()[0].value.length<1)?(
+                    {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
+                ):(
+                    {tag: "div", attrs: {className:"listSale"}, children: [
+                        ctrl.products()[0].value.map(function(item){
+                            return (
+                                {tag: "div", attrs: {className:"saleWr clearfix"}, children: [
+                                    {tag: "div", attrs: {className:"sale-info"}, children: [
+                                        {tag: "div", attrs: {className:"sale-name"}, children: [item.core.name]}, 
+                                        {tag: "div", attrs: {className:"sale-price"}, children: [
+                                            fn.price((item.extra.saleOff2>0)?(item.core.price[0].price -item.extra.saleOff2):(
+                                                (100 - item.extra.saleOff1)* (item.core.price[0].price) /100
+                                            )), " Đ"
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"old-price"}, children: [ fn.price(item.core.price[0].price), " Đ"]}
+                                    ]}, 
+                                    {tag: "div", attrs: {className:"sale-img"}, children: [
+                                        {tag: "img", attrs: {src:item.info.image[0].thumb, alt:""}}
+                                    ]}
+                                ]}
+
+                            )
+                        })
+                    ]}
+                )
+            ]}
+        ]}
+    )
+};
+
+module.exports = Right;
+
+},{"../../core/fn.msx":5}],16:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Right = function(ctrl){
