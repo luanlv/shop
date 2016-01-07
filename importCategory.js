@@ -49,7 +49,7 @@ var categoryLevel3 = [
     {slug: "rfid-nfc", name: "RFID / NFC", description: "", sku: {"parent_id" : "wireless", "name" : "Category ??", "slug" : "wireless"}},
 
     {slug: "msc-51", name: "MCS-51", description: "", sku: {"parent_id" : "atmel", "name" : "Category ??", "slug" : "atmel"}},
-    {slug: "avr", name: "AVR", description: "", sku: {"parent_id" : "atmel", "name" : "Category ??", "slug" : "atmel"}},
+    {slug: "avr2", name: "AVR", description: "", sku: {"parent_id" : "atmel", "name" : "Category ??", "slug" : "atmel"}},
 
     {slug: "pic-8-bit", name: "PIC - 8 bits", description: "", sku: {"parent_id" : "microchip", "name" : "Category ??", "slug" : "microchip"}},
     {slug: "pic-16-bit", name: "PIC - 16 bits", description: "", sku: {"parent_id" : "microchip", "name" : "Category ??", "slug" : "microchip"}},

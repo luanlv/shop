@@ -53,7 +53,7 @@ object Application extends LilaController{
   }
 
   def category(slug: String, slug2: String, slug3: String) = Action.async {
-    val products = lila.product.Env.current.cached.getByCategoryCached(slug, 12).map(Json.toJson(_)).await.toString
+    val products = lila.product.Env.current.cached.getByCategoryCached(slug, 20).map(Json.toJson(_)).await.toString
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
