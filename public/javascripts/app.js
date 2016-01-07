@@ -205,17 +205,9 @@ module.exports = fn;
 
 m.route.mode = "pathname";
 
-var Nav = require('./_nav.msx');
+window.Nav = require('./_nav.msx');
 window.Main = require('./_main.msx');
 window.Footer = require('./_footer.msx');
-
-m.mount(document.querySelector('#header'), Nav);
-
-window.routeState = {
-  change: true,
-  prevUrl: m.route()
-};
-
 
 
 
