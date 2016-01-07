@@ -4,7 +4,10 @@ fn.checkMenu = function(link){
     var partRoute = m.route().split('/');
     var result = true;
     var partLink = link.replace('https://', '').replace('http://', '').split('/');
-    for(var i = 1; i < partLink.length; i++){
+    if(!(partLink[1] === "c" || partLink[1] === "p")){
+        return false;
+    }
+    for(var i = 2; i < partLink.length; i++){
         if(partLink[i] != partRoute[i]){
             result = false;
         }

@@ -129,7 +129,7 @@ var Middle =  function(ctrl){
 
 
                                     <div className="itemWr">
-                                        <a href={("/p/" + item.slug)} config={m.route}>
+                                        <a href={(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug)} config={m.route}>
                                         <div className="img-item">
                                             <img src={item.info.image[0].small} alt=""/>
                                         </div>

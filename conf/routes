@@ -2,8 +2,8 @@
 
 
 GET   /                                 controllers.Application.index
-GET   /p/:slug                          controllers.Application.product(slug: String)
-GET   /c/:slug1                          controllers.Application.category(slug1: String, slug2: String ?="", slug3: String ?="")
+GET   /p/*path                          controllers.Application.product(path: String)
+GET   /c/:slug1                         controllers.Application.category(slug1: String, slug2: String ?="", slug3: String ?="")
 GET   /c/:slug2/:slug1                  controllers.Application.category(slug1: String, slug2: String, slug3: String ?= "")
 GET   /c/:slug3/:slug2/:slug1           controllers.Application.category(slug1: String, slug2: String, slug3: String)
 

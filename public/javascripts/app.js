@@ -76,7 +76,10 @@ fn.checkMenu = function(link){
     var partRoute = m.route().split('/');
     var result = true;
     var partLink = link.replace('https://', '').replace('http://', '').split('/');
-    for(var i = 1; i < partLink.length; i++){
+    if(!(partLink[1] === "c" || partLink[1] === "p")){
+        return false;
+    }
+    for(var i = 2; i < partLink.length; i++){
         if(partLink[i] != partRoute[i]){
             result = false;
         }
@@ -546,7 +549,7 @@ var Middle =  function(ctrl){
 
 
                                     {tag: "div", attrs: {className:"itemWr"}, children: [
-                                        {tag: "a", attrs: {href:("/p/" + item.slug), config:m.route}, children: [
+                                        {tag: "a", attrs: {href:(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug), config:m.route}, children: [
                                         {tag: "div", attrs: {className:"img-item"}, children: [
                                             {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
                                         ]}, 
@@ -743,7 +746,7 @@ var Middle =  function(ctrl){
                                 listProducts.value.map(function(item){
                                     return (
                                         {tag: "div", attrs: {className:"itemWr"}, children: [
-                                            {tag: "a", attrs: {href:("/p/" + item.slug), config:m.route}, children: [
+                                            {tag: "a", attrs: {href:(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug), config:m.route}, children: [
                                                 {tag: "div", attrs: {className:"img-item bo-5"}, children: [
                                                     {tag: "img", attrs: {class:"bo-5", src:item.info.image[0].small, alt:""}}
                                                 ]}, 

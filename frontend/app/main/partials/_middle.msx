@@ -100,7 +100,7 @@ var Middle =  function(ctrl){
                                 {listProducts.value.map(function(item){
                                     return (
                                         <div className="itemWr">
-                                            <a href={("/p/" + item.slug)} config={m.route}>
+                                            <a href={(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug)} config={m.route}>
                                                 <div className="img-item bo-5">
                                                     <img class="bo-5" src={item.info.image[0].small} alt=""/>
                                                 </div>
