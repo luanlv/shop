@@ -5,7 +5,9 @@ var Middle =  function(ctrl){
             <div class="loader">Loading...</div>
         </div>):(
         (ctrl.request.data().length < 1)?(
-            <div className="mid"> ERROR !!!</div>
+            <div className="mid">
+                <div className="noProduct">Hiện chưa có sản phẩm nào !</div>
+            </div>
         ):(
         <div className="mid">
             <div className="slider clearfix">

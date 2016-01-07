@@ -32,7 +32,7 @@ object Application extends LilaController{
       Json.obj("id" -> item, "value" -> ProductRepo.getByCategory(item, 12).map(products => Json.toJson(products)).await)
       }
     }
-    val allCategorys = CategoryRepo.getAllCategory().await.toString
+    val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
         val arr = (data\"v").as[JsArray].toString
@@ -43,7 +43,7 @@ object Application extends LilaController{
 
   def product(slug: String) = Action.async {
     val product = ProductRepo.getOneBySlug(slug).map(Json.toJson(_)).await.toString
-    val allCategorys = CategoryRepo.getAllCategory().await.toString
+    val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
         val arr = (data\"v").as[JsArray].toString
@@ -53,8 +53,8 @@ object Application extends LilaController{
   }
 
   def category(slug: String, slug2: String, slug3: String) = Action.async {
-    val products = ProductRepo.getByCategory("arduino", 12).map(Json.toJson(_)).await.toString
-    val allCategorys = CategoryRepo.getAllCategory().await.toString
+    val products = lila.product.Env.current.cached.getByCategoryCached(slug, 12).map(Json.toJson(_)).await.toString
+    val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
         val arr = (data\"v").as[JsArray].toString

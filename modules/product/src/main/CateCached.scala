@@ -3,7 +3,7 @@ package lila.product
 import scala.concurrent.duration._
 
 import org.joda.time.DateTime
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsValue, JsObject}
 import reactivemongo.bson._
 
 import spray.caching.{ LruCache, Cache }
@@ -22,20 +22,14 @@ final class CateCached(
 
   private val cache: Cache[List[Category]] = LruCache(timeToLive = 1 day)
   private val cacheIds: Cache[List[String]] = LruCache(timeToLive = 1 day)
+  private val cacheAllCategory: Cache[JsValue] = LruCache(timeToLive = 1 day)
 
   def clearAllCache = clearCache >> clearCacheIds
   def clearCache = fuccess(cache.clear)
   def clearCacheIds = fuccess(cacheIds.clear)
 
-  def test(text: String): Fu[List[Category]] = cache(true) {
-    val delay1 = 2
-    val result = categoryTube.coll.find(BSONDocument())
-        .cursor[Category]().collect[List]()
-    import scala.concurrent.duration._
-    import play.api.libs.concurrent.Promise
-
-    val futureProduct =  Promise.timeout(result, delay1.second).flatMap(x => x)
-    futureProduct
+  def getAllCategoryCached : Fu[JsValue] = cacheAllCategory(true) {
+    CategoryRepo.getAllCategory
   }
 
   def listIdsRamCached(id: String): Fu[List[String]] = cacheIds(id) {

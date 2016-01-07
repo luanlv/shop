@@ -38,7 +38,7 @@ trait CategoryRepo {
 
   import Category.{ BSONFields => F }
 
-  def getAllCategory() = categoryTube.coll.find(BSONDocument()).cursor[BSONDocument]().collect[List]().map(Json.toJson(_))
+  def getAllCategory = categoryTube.coll.find(BSONDocument()).cursor[BSONDocument]().collect[List]().map(Json.toJson(_))
 
   def getListSupId: Fu[List[String]] = categoryTube.coll.find(BSONDocument("sku.parent_id" -> "NONE"))
       .cursor[BSONDocument]()

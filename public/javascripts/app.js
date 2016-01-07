@@ -731,7 +731,9 @@ var Middle =  function(ctrl){
             {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
         ]}):(
         (ctrl.request.data().length < 1)?(
-            {tag: "div", attrs: {className:"mid"}, children: [" ERROR !!!"]}
+            {tag: "div", attrs: {className:"mid"}, children: [
+                {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
+            ]}
         ):(
         {tag: "div", attrs: {className:"mid"}, children: [
             {tag: "div", attrs: {className:"slider clearfix"}, children: [
@@ -899,7 +901,9 @@ var Middle =  function(ctrl){
                 {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
             ):(
                 (ctrl.product().length < 0)?(
-                    {tag: "div", attrs: {}, children: ["ERROR !!!"]}
+                    {tag: "div", attrs: {}, children: [
+                        {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
+                    ]}
                 ):(
                     {tag: "div", attrs: {class:true}, children: [
                         {tag: "div", attrs: {className:"clearfix"}, children: [
@@ -953,7 +957,9 @@ var Middle =  function(ctrl){
             {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
         ]}):(
         (ctrl.request.data().length < 1)?(
-            {tag: "div", attrs: {className:"mid"}, children: [" ERROR !!!"]}
+            {tag: "div", attrs: {className:"mid"}, children: [
+                {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
+            ]}
         ):(
         {tag: "div", attrs: {className:"mid"}, children: [
             {tag: "div", attrs: {className:"slider clearfix"}, children: [

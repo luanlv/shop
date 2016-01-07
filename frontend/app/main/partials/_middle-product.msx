@@ -10,7 +10,9 @@ var Middle =  function(ctrl){
                 <div class="loader">Loading...</div>
             ):(
                 (ctrl.product().length < 0)?(
-                    <div>ERROR !!!</div>
+                    <div>
+                        <div className="noProduct">Hiện chưa có sản phẩm nào !</div>
+                    </div>
                 ):(
                     <div class>
                         <div className="clearfix">
