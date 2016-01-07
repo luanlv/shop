@@ -20,31 +20,31 @@
         @jsTag("mithril/mithril.min.js")
         @jsTag("main.js")
         @jsTag("app.js")
-        <script >
-                var menu = @Html(listMenu);
-                var allCategory = @Html(allCategory);
-                var urls = buildUrls(allCategory);
-                var listProduct1 = [];
+        <script>/* <![CDATA[ */
+            var menu = @Html(listMenu);
+            var allCategory = @Html(allCategory);
+            var urls = buildUrls(allCategory);
+            var listProduct1 = [];
 
-                //            setTimeout(function(){
-                listProduct1 = @Html(listProduct);
-                m.redraw();
-                //            }, 0);
+            //            setTimeout(function(){
+            listProduct1 = @Html(listProduct);
+            m.redraw();
+            //            }, 0);
 
-                var demoSlide = listProduct1;
+            var demoSlide = listProduct1;
 
-                m.route(document.querySelector('#app'), "/", {
-                    "/": window.Main.Home,
-                    "/dashboard": window.Main.Dashboard,
-                    "/c/:category1": window.Main.Category,
-                    "/c/:category2/:category1": window.Main.Category,
-                    "/c/:category3/:category2/:category1": window.Main.Category,
-                    "/p/:c1/:c2/:c3/:item": window.Main.Product
-                });
+            m.route(document.querySelector('#app'), "/", {
+                "/": window.Main.Home,
+                "/dashboard": window.Main.Dashboard,
+                "/c/:category1": window.Main.Category,
+                "/c/:category2/:category1": window.Main.Category,
+                "/c/:category3/:category2/:category1": window.Main.Category,
+                "/p/:c1/:c2/:c3/:item": window.Main.Product
+            });
 
-                m.mount(document.querySelector('#header'), window.Nav);
+            m.mount(document.querySelector('#header'), window.Nav);
 
-        </script>
+        /* ]]> */</script>
 
 
     </body>

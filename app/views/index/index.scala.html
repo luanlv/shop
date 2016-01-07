@@ -20,7 +20,7 @@
         @jsTag("mithril/mithril.js")
         @jsTag("main.js")
         @jsTag("app.js")
-        <script >
+        <script>/* <![CDATA[ */
             var menu = @Html(listMenu);
             var allCategory = @Html(allCategory);
             var urls = buildUrls(allCategory);
@@ -44,8 +44,7 @@
 
             m.mount(document.querySelector('#header'), window.Nav);
 
-
-        </script>
+        /* ]]> */</script>
 
 
     </body>
