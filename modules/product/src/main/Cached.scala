@@ -14,6 +14,7 @@ import lila.db.BSON._
 import lila.db.Implicits._
 import lila.memo.{ ExpireSetMemo, MongoCache }
 import tube.productTube
+import play.modules.reactivemongo.json.BSONFormats._
 
 final class Cached(
                       nbTtl: FiniteDuration,
