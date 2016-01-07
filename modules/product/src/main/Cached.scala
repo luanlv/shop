@@ -3,7 +3,7 @@ package lila.product
 import scala.concurrent.duration._
 
 import org.joda.time.DateTime
-import play.api.libs.json.{Json, JsObject}
+import play.api.libs.json.{JsArray, Json, JsObject}
 import reactivemongo.bson._
 
 import spray.caching.{ LruCache, Cache }
@@ -41,4 +41,5 @@ final class Cached(
       }
     }
   }
+
 }

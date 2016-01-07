@@ -29,11 +29,8 @@ object Application extends LilaController{
   def index = Action.async {
     val products = Env.product.cached.getAllForIndex.await
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
-    lila.setup.Env.current.setupRepo.get("listMenu").map {
-      data => {
-        val arr = (data\"v").as[JsArray].toString
-        Ok(views.html.index.index(arr, allCategorys, Json.toJson(products).toString))
-      }
+    lila.setup.Env.current.cached.getMenu("listMenu").map {
+      menu => Ok(views.html.index.index(menu, allCategorys, Json.toJson(products).toString))
     }
   }
 
@@ -41,22 +38,17 @@ object Application extends LilaController{
     val slug = path.split('/').last
     val product = ProductRepo.getOneBySlug(slug).map(Json.toJson(_)).await.toString
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
-    lila.setup.Env.current.setupRepo.get("listMenu").map {
-      data => {
-        val arr = (data\"v").as[JsArray].toString
-        Ok(views.html.index.product(arr, allCategorys, product))
-      }
+    lila.setup.Env.current.cached.getMenu("listMenu").map {
+      menu =>
+        Ok(views.html.index.product(menu, allCategorys, product))
     }
   }
 
   def category(slug: String, slug2: String, slug3: String) = Action.async {
     val products = lila.product.Env.current.cached.getByCategoryCached(slug, 20).map(Json.toJson(_)).await.toString
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
-    lila.setup.Env.current.setupRepo.get("listMenu").map {
-      data => {
-        val arr = (data\"v").as[JsArray].toString
-        Ok(views.html.index.category(arr, allCategorys, products))
-      }
+    lila.setup.Env.current.cached.getMenu("listMenu").map {
+      menu => Ok(views.html.index.category(menu, allCategorys, products))
     }
   }
 
