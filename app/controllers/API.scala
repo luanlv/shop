@@ -33,7 +33,7 @@ object API extends LilaController {
   }
 
   def getProducts(category: String) = Open { implicit ctx =>
-    ProductRepo.getByCategory(category, 12).map {
+    lila.product.Env.current.cached.getByCategoryCached(category, 20).map {
       products => {
         Ok(Json.toJson(products))
       }
