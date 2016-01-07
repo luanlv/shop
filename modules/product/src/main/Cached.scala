@@ -3,7 +3,7 @@ package lila.product
 import scala.concurrent.duration._
 
 import org.joda.time.DateTime
-import play.api.libs.json.JsObject
+import play.api.libs.json.{Json, JsObject}
 import reactivemongo.bson._
 
 import spray.caching.{ LruCache, Cache }
@@ -21,7 +21,8 @@ final class Cached(
 
   private def oneWeekAgo = DateTime.now minusWeeks 1
 
-  private val cache: Cache[List[BSONDocument]] = LruCache(timeToLive = 1 hour)
+  private val cache: Cache[List[BSONDocument]] = LruCache(timeToLive = 12 hour)
+  private val cacheForIndex: Cache[List[JsObject]] = LruCache(timeToLive = 12 hour)
 
   def clearCache = fuccess(cache.clear)
 
@@ -30,5 +31,13 @@ final class Cached(
 
   def getByCategoryCached(cate: String, nb: Int): Fu[List[BSONDocument]] = cache(cate + ":" + nb){
      ProductRepo.getByCategory(cate, nb)
+  }
+
+  def getAllForIndex : Fu[List[JsObject]] = cacheForIndex(true){
+    Env.current.cateCached.getListSupId.map{
+      supIds => supIds.map {
+        item =>  Json.obj("id" -> item, "value" -> ProductRepo.getByCategory(item, 12).map(products => Json.toJson(products)).await)
+      }
+    }
   }
 }

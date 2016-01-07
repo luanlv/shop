@@ -27,11 +27,7 @@ object Application extends LilaController{
   private def env = lila.app.Env.current
 
   def index = Action.async {
-    val supIds = Env.product.cateCached.getListSupId.await
-    val products = supIds.map{ item => {
-      Json.obj("id" -> item, "value" -> ProductRepo.getByCategory(item, 12).map(products => Json.toJson(products)).await)
-      }
-    }
+    val products = Env.product.cached.getAllForIndex.await
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.setupRepo.get("listMenu").map {
       data => {
