@@ -6,7 +6,7 @@ object Dependencies {
   private val home = "file://" + Path.userHome.absolutePath
 
   object Resolvers {
-    val typesafe = "typesafe.com" at "http://repo.typesafe.com/typesafe/releases/"
+    val typesafe = "typesafe.com" at "https://repo.typesafe.com/typesafe/releases/"
     val sonatype = "sonatype" at "https://oss.sonatype.org/content/repositories/releases"
     val sonatypeS = "sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     val t2v = "t2v.jp repo" at "http://www.t2v.jp/maven-repo/"

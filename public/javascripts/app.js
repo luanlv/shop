@@ -229,6 +229,7 @@ var fn = require('../core/fn.msx');
 
 var Category = {
     controller: function() {
+        m.redraw.strategy("diff")
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
@@ -284,6 +285,7 @@ var Right = require('./partials/_right.msx');
 
 var Dashboard = {
     controller: function() {
+        m.redraw.strategy("diff")
         var ctrl = this;
         ctrl.foo = 'foo';
         ctrl.data = m.prop([]);
@@ -313,6 +315,8 @@ var fn = require('../core/fn.msx');
 
 var Home = {
     controller: function() {
+        m.redraw.strategy("diff")
+        console.log("run home controller")
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
@@ -345,6 +349,7 @@ var Home = {
         window.demoSlide = [];
     },
     view: function(ctrl) {
+        console.log("running view")
         return m('div', [
             Left(ctrl),
             Middle(ctrl),
@@ -363,6 +368,7 @@ var fn = require('../core/fn.msx');
 
 var Product = {
     controller: function() {
+        m.redraw.strategy("diff")
         var ctrl = this;
         ctrl.product = m.prop({status: "loading"});
         ctrl.zoom = false;
@@ -651,10 +657,10 @@ var Middle =  function(ctrl){
             {tag: "div", attrs: {className:"slider clearfix"}, children: [
                 {tag: "div", attrs: {className:"sliderWr", 
                      config:
-                        function(el, isInited){
+                        function(el, isInited, ctx){
                             if(!isInited){
-                                var preloadedAllImages = false;
-                                var onHover = false;
+                                ctx.preloadedAllImages = false;
+                                ctx.running = false;
                                 var nextSlide = function(){
                                     if(ctrl.current == (ctrl.maxSlide - 1 )){
                                         ctrl.current = 0;
@@ -666,49 +672,53 @@ var Middle =  function(ctrl){
 
                                 };
 
-                                var slideOut, slideIn;
-
-                                slideOut = setInterval(function slide(){
-                                    if(!preloadedAllImages){
-                                        fn.preloadImages([ctrl.slides()[ctrl.current+1].info.image[0].origin]);
-                                        if( ctrl.current + 1 === ctrl.maxSlide - 1) preloadedAllImages = true;
-                                    }
-                                    if(!onHover){
-                                        el.classList.add("fadeOutLeft");
-                                        el.classList.add("animated");
-                                        slideIn = setTimeout(function(){
-                                            nextSlide();
-                                            var animated = el.querySelectorAll('.animated');
-                                            for(var i = 0; i < animated.length; i++){
-                                                animated[i].classList.remove("animated");
-                                                ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
-                                                    if(animated[i].classList.contains(cName)){
-                                                        animated[i].classList.remove(cName);
-
-                                                        animated[i].offsetWidth = animated[i].offsetWidth;
-
-                                                        animated[i].classList.add(cName);
-                                                    }
-                                                });
-                                                animated[i].classList.add("animated");
+                                var slideOut;
+                                var run = function(){
+                                    if(ctx.running == false){
+                                        slideOut = setInterval(function(){
+                                            ctx.running = true;
+                                            if(!ctx.preloadedAllImages){
+                                                fn.preloadImages([ctrl.slides()[ctrl.current+1].info.image[0].origin]);
+                                                if( ctrl.current + 1 === ctrl.maxSlide - 1) ctx.preloadedAllImages = true;
                                             }
-                                            el.classList.remove("fadeOutLeft");
-                                            el.classList.remove("animated");
-                                        }, 700)
-                                    }
-                                }, 3700);
+                                                el.classList.add("fadeOutLeft");
+                                                el.classList.add("animated");
+                                                setTimeout(function(){
+                                                    nextSlide();
+                                                    var animated = el.querySelectorAll('.animated');
+                                                    for(var i = 0; i < animated.length; i++){
+                                                        animated[i].classList.remove("animated");
+                                                        ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
+                                                            if(animated[i].classList.contains(cName)){
+                                                                animated[i].classList.remove(cName);
 
+                                                                animated[i].offsetWidth = animated[i].offsetWidth;
+
+                                                                animated[i].classList.add(cName);
+                                                            }
+                                                        });
+                                                        animated[i].classList.add("animated");
+                                                    }
+                                                    el.classList.remove("fadeOutLeft");
+                                                    el.classList.remove("animated");
+                                                }, 700)
+
+                                        }, 3700);
+                                    }
+                                };
+
+                                run()
                                 //setTimeout(function(){
                                 //    el.classList.remove("fadeOutLeft")
                                 //    el.classList.remove("animated")
                                 //}, 4000)
 
                                 el.parentNode.addEventListener('mouseover', function(){
-                                    onHover = true;
+                                    ctx.running = false;
+                                    clearInterval(slideOut)
                                 });
                                 el.parentNode.addEventListener('mouseleave', function(){
-                                    onHover = false;
-
+                                    run();
                                 });
                             }
                         }

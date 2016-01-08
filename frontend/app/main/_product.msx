@@ -5,6 +5,7 @@ var fn = require('../core/fn.msx');
 
 var Product = {
     controller: function() {
+        m.redraw.strategy("diff")
         var ctrl = this;
         ctrl.product = m.prop({status: "loading"});
         ctrl.zoom = false;

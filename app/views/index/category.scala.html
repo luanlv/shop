@@ -33,6 +33,7 @@
 
             var demoSlide = listProduct1;
 
+            m.mount(document.querySelector('#header'), window.Nav);
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,
                 "/dashboard": window.Main.Dashboard,
@@ -42,7 +43,7 @@
                 "/p/:c1/:c2/:c3/:item": window.Main.Product
             });
 
-            m.mount(document.querySelector('#header'), window.Nav);
+
 
         /* ]]> */</script>
 

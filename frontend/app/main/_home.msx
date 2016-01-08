@@ -5,6 +5,8 @@ var fn = require('../core/fn.msx');
 
 var Home = {
     controller: function() {
+        m.redraw.strategy("diff")
+        console.log("run home controller")
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
@@ -37,6 +39,7 @@ var Home = {
         window.demoSlide = [];
     },
     view: function(ctrl) {
+        console.log("running view")
         return m('div', [
             Left(ctrl),
             Middle(ctrl),

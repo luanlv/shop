@@ -17,7 +17,7 @@
         </div>
         <div id="footer"></div>
 
-        @jsTag("mithril/mithril.js")
+        @jsTag("mithril/mithril.min.js")
         @jsTag("main.js")
         @jsTag("app.js")
         <script>/* <![CDATA[ */
@@ -33,6 +33,8 @@
 
             var demoSlide = listProduct1;
 
+            m.mount(document.querySelector('#header'), window.Nav);
+
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,
                 "/dashboard": window.Main.Dashboard,
@@ -42,8 +44,7 @@
                 "/p/:c1/:c2/:c3/:item": window.Main.Product
             });
 
-            m.mount(document.querySelector('#header'), window.Nav);
-            m.redraw();
+
 
         /* ]]> */</script>
 

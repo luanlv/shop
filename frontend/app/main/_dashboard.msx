@@ -5,6 +5,7 @@ var Right = require('./partials/_right.msx');
 
 var Dashboard = {
     controller: function() {
+        m.redraw.strategy("diff")
         var ctrl = this;
         ctrl.foo = 'foo';
         ctrl.data = m.prop([]);

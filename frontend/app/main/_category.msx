@@ -5,6 +5,7 @@ var fn = require('../core/fn.msx');
 
 var Category = {
     controller: function() {
+        m.redraw.strategy("diff")
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
