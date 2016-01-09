@@ -1,3 +1,5 @@
+var Nav = require('./_nav.msx');
+var Footer = require('./_footer.msx');
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-search.msx');
 var Right = require('./partials/_right.msx');
@@ -7,6 +9,11 @@ var Search = {
     controller: function() {
         m.redraw.strategy("diff")
         var ctrl = this;
+        if(window._kw !== undefined ) {
+            ctrl._kw = window._kw;
+        } else {
+            ctrl._kw = ""
+        }
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
@@ -50,9 +57,14 @@ var Search = {
     },
     view: function(ctrl) {
         return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
-            Right(ctrl),
+            Nav.view(ctrl),
+            <div id="main" className="clearfix">
+                {[
+                    Left(ctrl),
+                    Middle(ctrl),
+                ]}
+            </div>,
+            Footer.view(ctrl)
         ])
     }
 };

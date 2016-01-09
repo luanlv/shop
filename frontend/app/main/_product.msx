@@ -1,3 +1,5 @@
+var Nav = require('./_nav.msx');
+var Footer = require('./_footer.msx');
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-product.msx');
 var Right = require('./partials/_right.msx');
@@ -7,6 +9,11 @@ var Product = {
     controller: function() {
         m.redraw.strategy("diff")
         var ctrl = this;
+        if(window._kw !== undefined ) {
+            ctrl._kw = window._kw;
+        } else {
+            ctrl._kw = ""
+        }
         ctrl.product = m.prop({status: "loading"});
         ctrl.zoom = false;
         ctrl.setup = function(){
@@ -28,8 +35,14 @@ var Product = {
     },
     view: function(ctrl) {
         return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
+            Nav.view(ctrl),
+            <div id="main" className="clearfix">
+                {[
+                    Left(ctrl),
+                    Middle(ctrl),
+                ]}
+            </div>,
+            Footer.view(ctrl)
         ])
     }
 };

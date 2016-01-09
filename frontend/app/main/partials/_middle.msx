@@ -1,9 +1,11 @@
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
-    return (!ctrl.request.ready()?(<div className="mid">
-            <div class="loader">Loading...</div>
-        </div>):(
+    return (!ctrl.request.ready()?(
+            <div className="mid">
+                <div class="loader">Loading...</div>
+            </div>
+        ):(
         (ctrl.request.data().length < 1)?(
             <div className="mid">
                 <div className="noProduct">Hiện chưa có sản phẩm nào !</div>

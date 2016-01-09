@@ -11,11 +11,7 @@
             <![endif]-->
         </head>
     <body>
-        <div id="header"></div>
-        <div id="main" class="clearfix">
-            <div id="app"></div>
-        </div>
-        <div id="footer"></div>
+        <div id="app"></div>
 
         @jsTag("mithril/mithril.min.js")
         @jsTag("main.js")
@@ -33,10 +29,8 @@
 
             var demoSlide = listProduct1;
 
-            m.mount(document.querySelector('#header'), window.Nav);
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,
-                "/dashboard": window.Main.Dashboard,
                 "/tim-kiem": window.Main.Search,
                 "/c/:category1": window.Main.Category,
                 "/c/:category2/:category1": window.Main.Category,

@@ -6,8 +6,10 @@ Footer.controller = function(){
 
 Footer.view = function(ctrl){
     return (
-        <div>
+        <div id="footer">
             FOOTER
         </div>
     )
 }
+
+module.exports = Footer;

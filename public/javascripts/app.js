@@ -1,103 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var Footer = Footer || {};
-
-Footer.controller = function(){
-    m.redraw.strategy("diff");
-};
-
-Footer.view = function(ctrl){
-    return (
-        {tag: "div", attrs: {}, children: [
-            "FOOTER"
-        ]}
-    )
-}
-},{}],2:[function(require,module,exports){
 
 var Main = Main || {};
 
 Main.Home = require('./main/_home.msx');
-Main.Dashboard = require('./main/_dashboard.msx');
+//Main.Dashboard = require('./main/_dashboard.msx');
 Main.Product = require('./main/_product.msx');
 Main.Category = require('./main/_category.msx');
 Main.Search = require('./main/_search.msx');
 
 module.exports = Main;
-},{"./main/_category.msx":7,"./main/_dashboard.msx":8,"./main/_home.msx":9,"./main/_product.msx":10,"./main/_search.msx":11}],3:[function(require,module,exports){
-
-
-var Nav = {};
-Nav.controller = function(){
-    m.redraw.strategy("diff");
-    var ctrl = this;
-    if(window._kw !== undefined ) {
-        ctrl._kw = window._kw;
-    } else {
-        ctrl._kw = ""
-    }
-    //setInterval(function(){m.redraw()}, 2000)
-};
-Nav.view = function(ctrl){
-    //console.log("render view");
-    return (
-        {tag: "div", attrs: {className:"h-container"}, children: [
-            {tag: "div", attrs: {className:"h-left"}}, 
-            {tag: "div", attrs: {className:"h-right"}, children: [
-                {tag: "div", attrs: {className:"h-top"}, children: [
-                    {tag: "div", attrs: {className:"search clearfix"}, children: [
-                        {tag: "div", attrs: {className:"searchWr"}, children: [
-                            {tag: "form", attrs: {action:"tim-kiem", method:"get"}, children: [
-                            {tag: "input", attrs: {type:"text", id:"_kw", name:"_kw", 
-                                   onkeydown:function(){
-                                        if (event.keyCode == 13) {
-                                                event.preventDefault();
-                                                m.route("/tim-kiem?_kw=" + event.target.value);
-                                            }
-                                        }, 
-                                    
-                                   config:
-                                      function(el, isInited){
-                                        if(!isInited){
-                                            if(ctrl._kw.length>0){
-                                                el.value = ctrl._kw;
-                                            }
-                                        }
-                                      }
-                                   }
-                            }, 
-                            {tag: "span", attrs: {className:"search-icon"}}
-                            ]}
-                        ]}, 
-                        {tag: "a", attrs: {href:"#", className:"cartWr clearfix"}, children: [
-
-                            {tag: "span", attrs: {className:"cart-icon"}}, 
-                            {tag: "span", attrs: {className:"number-items"}, children: [
-                                "(0) Mục"
-                            ]}
-                        ]}, 
-                        {tag: "div", attrs: {className:"userWr bo bo-5"}
-                        }
-                    ]}
-
-                ]}, 
-                {tag: "div", attrs: {className:"h-bot"}, children: [
-                    {tag: "ul", attrs: {className:"navMenu"}, children: [
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["GIỚI THIỆU"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route, className:"active"}, children: ["LINH KIỆN"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["SẢN PHẨM"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["NGHIÊN CỨU"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["DỊCH VỤ"]}]}, 
-                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["LIÊN HỆ"]}]}
-                    ]}
-                ]}
-            ]}
-        ]}
-    )
-};
-
-
-module.exports = Nav;
-},{}],4:[function(require,module,exports){
+},{"./main/_category.msx":5,"./main/_home.msx":7,"./main/_product.msx":9,"./main/_search.msx":10}],2:[function(require,module,exports){
 var fn = require('./fn.msx');
 var Data = Data | {};
 
@@ -107,7 +19,7 @@ var Data = Data | {};
 module.exports = Data;
 
 
-},{"./fn.msx":5}],5:[function(require,module,exports){
+},{"./fn.msx":3}],3:[function(require,module,exports){
 var fn = fn || {};
 
 fn.checkMenu = function(link){
@@ -306,15 +218,15 @@ fn.buildPageNav = function(currPage, maxPage){
 
 module.exports = fn;
 
-},{}],6:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 
 m.route.mode = "pathname";
 
-window.Nav = require('./_nav.msx');
+//window.Nav = require('./_nav.msx');
 window.Main = require('./_main.msx');
-window.Footer = require('./_footer.msx');
+//window.Footer = require('./_footer.msx');
 
 
 
@@ -328,7 +240,9 @@ window.Footer = require('./_footer.msx');
 
 
 
-},{"./_footer.msx":1,"./_main.msx":2,"./_nav.msx":3}],7:[function(require,module,exports){
+},{"./_main.msx":1}],5:[function(require,module,exports){
+var Nav = require('./_nav.msx');
+var Footer = require('./_footer.msx');
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-category.msx');
 var Right = require('./partials/_right.msx');
@@ -338,6 +252,11 @@ var Category = {
     controller: function() {
         m.redraw.strategy("diff")
         var ctrl = this;
+        if(window._kw !== undefined ) {
+            ctrl._kw = window._kw;
+        } else {
+            ctrl._kw = ""
+        }
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
@@ -384,46 +303,40 @@ var Category = {
     },
     view: function(ctrl) {
         return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
-            Right(ctrl),
+            Nav.view(ctrl),
+            {tag: "div", attrs: {id:"main", className:"clearfix"}, children: [
+                [
+                    Left(ctrl),
+                    Middle(ctrl),
+                    Right(ctrl),
+                ]
+            ]},
+            Footer.view(ctrl)
         ])
     }
 };
 
 
 module.exports = Category;
-},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle-category.msx":13,"./partials/_right.msx":18}],8:[function(require,module,exports){
-var Left = require('./partials/_left.msx');
-var Middle = require('./partials/_middle.msx');
-var Right = require('./partials/_right.msx');
+},{"../core/fn.msx":3,"./_footer.msx":6,"./_nav.msx":8,"./partials/_left.msx":11,"./partials/_middle-category.msx":12,"./partials/_right.msx":17}],6:[function(require,module,exports){
+var Footer = Footer || {};
 
-
-var Dashboard = {
-    controller: function() {
-        m.redraw.strategy("diff")
-        var ctrl = this;
-        ctrl.foo = 'foo';
-        ctrl.data = m.prop([]);
-        //m.request({method: "GET", url: "/data2.json"}).then(function(res){
-        //  ctrl.data(res.data)
-        //});
-
-        ctrl.data([
-            {"value": 5}
-        ])
-    },
-    view: function(ctrl) {
-        return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
-            Right(ctrl),
-        ])
-    }
+Footer.controller = function(){
+    m.redraw.strategy("diff");
 };
 
-module.exports = Dashboard;
-},{"./partials/_left.msx":12,"./partials/_middle.msx":16,"./partials/_right.msx":18}],9:[function(require,module,exports){
+Footer.view = function(ctrl){
+    return (
+        {tag: "div", attrs: {id:"footer"}, children: [
+            "FOOTER"
+        ]}
+    )
+}
+
+module.exports = Footer;
+},{}],7:[function(require,module,exports){
+var Nav = require('./_nav.msx');
+var Footer = require('./_footer.msx');
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right-tmp.msx');
@@ -434,6 +347,11 @@ var Home = {
         m.redraw.strategy("diff");
 
         var ctrl = this;
+        if(window._kw !== undefined ) {
+            ctrl._kw = window._kw;
+        } else {
+            ctrl._kw = ""
+        }
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
@@ -466,16 +384,100 @@ var Home = {
     },
     view: function(ctrl) {
         return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
-            Right(ctrl),
+            Nav.view(ctrl),
+            {tag: "div", attrs: {id:"main", className:"clearfix"}, children: [
+                [
+                    Left(ctrl),
+                    Middle(ctrl),
+                    Right(ctrl),
+                ]
+            ]},
+            Footer.view(ctrl)
         ])
     }
 };
 
 
 module.exports = Home;
-},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle.msx":16,"./partials/_right-tmp.msx":17}],10:[function(require,module,exports){
+},{"../core/fn.msx":3,"./_footer.msx":6,"./_nav.msx":8,"./partials/_left.msx":11,"./partials/_middle.msx":15,"./partials/_right-tmp.msx":16}],8:[function(require,module,exports){
+
+
+var Nav = {};
+Nav.controller = function(){
+    m.redraw.strategy("diff");
+    var ctrl = this;
+    if(window._kw !== undefined ) {
+        ctrl._kw = window._kw;
+    } else {
+        ctrl._kw = ""
+    }
+    //setInterval(function(){m.redraw()}, 2000)
+};
+Nav.view = function(ctrl){
+    //console.log("render view");
+    return (
+        {tag: "div", attrs: {id:"header"}, children: [
+        {tag: "div", attrs: {className:"h-container"}, children: [
+            {tag: "div", attrs: {className:"h-left"}}, 
+            {tag: "div", attrs: {className:"h-right"}, children: [
+                {tag: "div", attrs: {className:"h-top"}, children: [
+                    {tag: "div", attrs: {className:"search clearfix"}, children: [
+                        {tag: "div", attrs: {className:"searchWr"}, children: [
+                            {tag: "form", attrs: {action:"tim-kiem", method:"get"}, children: [
+                            {tag: "input", attrs: {type:"text", id:"_kw", name:"_kw", 
+                                   onkeydown:function(){
+                                        if (event.keyCode == 13) {
+                                                event.preventDefault();
+                                                m.route("/tim-kiem?_kw=" + event.target.value);
+                                            }
+                                        }, 
+                                    
+                                   config:
+                                      function(el, isInited){
+                                        if(!isInited){
+                                            if(ctrl._kw.length>0){
+                                                el.value = ctrl._kw;
+                                            }
+                                        }
+                                      }
+                                   }
+                            }, 
+                            {tag: "span", attrs: {className:"search-icon"}}
+                            ]}
+                        ]}, 
+                        {tag: "a", attrs: {href:"#", className:"cartWr clearfix"}, children: [
+
+                            {tag: "span", attrs: {className:"cart-icon"}}, 
+                            {tag: "span", attrs: {className:"number-items"}, children: [
+                                "(0) Mục"
+                            ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"userWr bo bo-5"}
+                        }
+                    ]}
+
+                ]}, 
+                {tag: "div", attrs: {className:"h-bot"}, children: [
+                    {tag: "ul", attrs: {className:"navMenu"}, children: [
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["GIỚI THIỆU"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route, className:"active"}, children: ["LINH KIỆN"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["SẢN PHẨM"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["NGHIÊN CỨU"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["DỊCH VỤ"]}]}, 
+                        {tag: "li", attrs: {}, children: [{tag: "a", attrs: {href:"/", config:m.route}, children: ["LIÊN HỆ"]}]}
+                    ]}
+                ]}
+            ]}
+        ]}
+        ]}
+    )
+};
+
+
+module.exports = Nav;
+},{}],9:[function(require,module,exports){
+var Nav = require('./_nav.msx');
+var Footer = require('./_footer.msx');
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-product.msx');
 var Right = require('./partials/_right.msx');
@@ -485,6 +487,11 @@ var Product = {
     controller: function() {
         m.redraw.strategy("diff")
         var ctrl = this;
+        if(window._kw !== undefined ) {
+            ctrl._kw = window._kw;
+        } else {
+            ctrl._kw = ""
+        }
         ctrl.product = m.prop({status: "loading"});
         ctrl.zoom = false;
         ctrl.setup = function(){
@@ -506,15 +513,23 @@ var Product = {
     },
     view: function(ctrl) {
         return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
+            Nav.view(ctrl),
+            {tag: "div", attrs: {id:"main", className:"clearfix"}, children: [
+                [
+                    Left(ctrl),
+                    Middle(ctrl),
+                ]
+            ]},
+            Footer.view(ctrl)
         ])
     }
 };
 
 
 module.exports = Product;
-},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle-product.msx":14,"./partials/_right.msx":18}],11:[function(require,module,exports){
+},{"../core/fn.msx":3,"./_footer.msx":6,"./_nav.msx":8,"./partials/_left.msx":11,"./partials/_middle-product.msx":13,"./partials/_right.msx":17}],10:[function(require,module,exports){
+var Nav = require('./_nav.msx');
+var Footer = require('./_footer.msx');
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-search.msx');
 var Right = require('./partials/_right.msx');
@@ -524,6 +539,11 @@ var Search = {
     controller: function() {
         m.redraw.strategy("diff")
         var ctrl = this;
+        if(window._kw !== undefined ) {
+            ctrl._kw = window._kw;
+        } else {
+            ctrl._kw = ""
+        }
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
@@ -567,16 +587,21 @@ var Search = {
     },
     view: function(ctrl) {
         return m('div', [
-            Left(ctrl),
-            Middle(ctrl),
-            Right(ctrl),
+            Nav.view(ctrl),
+            {tag: "div", attrs: {id:"main", className:"clearfix"}, children: [
+                [
+                    Left(ctrl),
+                    Middle(ctrl),
+                ]
+            ]},
+            Footer.view(ctrl)
         ])
     }
 };
 
 
 module.exports = Search;
-},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle-search.msx":15,"./partials/_right.msx":18}],12:[function(require,module,exports){
+},{"../core/fn.msx":3,"./_footer.msx":6,"./_nav.msx":8,"./partials/_left.msx":11,"./partials/_middle-search.msx":14,"./partials/_right.msx":17}],11:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 var data = require('../../core/data.js');
 
@@ -592,7 +617,7 @@ var Left = function(ctrl){
 
 
 module.exports = Left;
-},{"../../core/data.js":4,"../../core/fn.msx":5}],13:[function(require,module,exports){
+},{"../../core/data.js":2,"../../core/fn.msx":3}],12:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
@@ -773,7 +798,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],14:[function(require,module,exports){
+},{"../../core/fn.msx":3}],13:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
@@ -836,7 +861,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],15:[function(require,module,exports){
+},{"../../core/fn.msx":3}],14:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
@@ -929,13 +954,15 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],16:[function(require,module,exports){
+},{"../../core/fn.msx":3}],15:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
-    return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
-            {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
-        ]}):(
+    return (!ctrl.request.ready()?(
+            {tag: "div", attrs: {className:"mid"}, children: [
+                {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+            ]}
+        ):(
         (ctrl.request.data().length < 1)?(
             {tag: "div", attrs: {className:"mid"}, children: [
                 {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
@@ -1070,7 +1097,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],17:[function(require,module,exports){
+},{"../../core/fn.msx":3}],16:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Right = function(ctrl){
@@ -1124,7 +1151,7 @@ var Right = function(ctrl){
 
 module.exports = Right;
 
-},{"../../core/fn.msx":5}],18:[function(require,module,exports){
+},{"../../core/fn.msx":3}],17:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Right = function(ctrl){
@@ -1175,4 +1202,4 @@ var Right = function(ctrl){
 
 module.exports = Right;
 
-},{"../../core/fn.msx":5}]},{},[6])
+},{"../../core/fn.msx":3}]},{},[4])

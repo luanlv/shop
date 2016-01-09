@@ -3,9 +3,9 @@
 
 m.route.mode = "pathname";
 
-window.Nav = require('./_nav.msx');
+//window.Nav = require('./_nav.msx');
 window.Main = require('./_main.msx');
-window.Footer = require('./_footer.msx');
+//window.Footer = require('./_footer.msx');
 
 
 
