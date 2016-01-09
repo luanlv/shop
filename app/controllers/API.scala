@@ -51,8 +51,15 @@ object API extends LilaController {
   }
 
   def search = Open { implicit ctx =>
-    var kw = get("_kw").get
-    ProductRepo.search(kw, 20) map {
+    var kw = get("_kw") match {
+      case Some(st) => st
+      case None      => ""
+    }
+    val page = get("_page") match{
+      case Some(int) => int.toInt
+      case None      => 1
+    }
+    ProductRepo.search(kw, 20, page) map {
       products => {
         Ok(Json.toJson(products))
       }

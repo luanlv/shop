@@ -582,6 +582,13 @@ img {
   display: inline-block;
   padding: 5px;
   border-bottom: 1px solid #ddd; }
+.categoryWr .total {
+  margin-top: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: italic;
+  color: #666;
+  line-height: 20px; }
 .categoryWr .select {
   height: 28px;
   padding: 4px;

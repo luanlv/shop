@@ -126,19 +126,22 @@ fn.requestWithFeedback = function(args, bind, fn) {
 
 fn.changePage = function(currPage, newPage, maxPage){
     var url = m.route();
+    console.log(url)
     var newUrl;
     var currParam = m.route.param('_page');
     if(url.indexOf('?') < 0){
         url += '?';
     }
-    console.log(currParam)
+
     if(currParam === undefined){
-        newUrl = url + '_page=' + newPage;
+        newUrl = url + '&_page=' + newPage;
     } else {
         var oldParam = '_page=' + currParam;
         var newParam = '_page=' + newPage;
         newUrl = url.toString().replace(oldParam, newParam);
     }
+
+    console.log(newUrl)
     m.route(newUrl);
 }
 

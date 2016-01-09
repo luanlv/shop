@@ -236,19 +236,22 @@ fn.requestWithFeedback = function(args, bind, fn) {
 
 fn.changePage = function(currPage, newPage, maxPage){
     var url = m.route();
+    console.log(url)
     var newUrl;
     var currParam = m.route.param('_page');
     if(url.indexOf('?') < 0){
         url += '?';
     }
-    console.log(currParam)
+
     if(currParam === undefined){
-        newUrl = url + '_page=' + newPage;
+        newUrl = url + '&_page=' + newPage;
     } else {
         var oldParam = '_page=' + currParam;
         var newParam = '_page=' + newPage;
         newUrl = url.toString().replace(oldParam, newParam);
     }
+
+    console.log(newUrl)
     m.route(newUrl);
 }
 
@@ -520,6 +523,9 @@ var Search = {
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
+        //ctrl.currPage = m.prop(1);
+        ctrl.total = m.prop(0);
+        ctrl.maxPage = m.prop(0);
         ctrl.slides = m.prop([]);
         ctrl.current = 0;
 
@@ -528,14 +534,17 @@ var Search = {
         ctrl.loading = true;
         ctrl.ok = false;
         ctrl.setup = function(){
-            ctrl.products(ctrl.request.data());
-            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.products(ctrl.request.data().products);
+            ctrl.total(ctrl.request.data().total);
+            ctrl.currPage = m.prop(ctrl.request.data().page);
+            ctrl.maxPage(ctrl.request.data().totalPage);
+            ctrl.slides(ctrl.request.data().products.slice(2, 6));
             ctrl.currentSlide(ctrl.slides()[0]);
             ctrl.maxSlide = ctrl.slides().length;
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/search?_kw=" + m.route.param('_kw')}, ctrl.products, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/search?_kw=" + m.route.param('_kw') + "&" + ((m.route.param('_page') !== undefined)?("_page=" + m.route.param("_page")):"")}, ctrl.products, ctrl.setup);
         } else {
             ctrl.request = {
                 ready: function () {
@@ -556,7 +565,7 @@ var Search = {
         return m('div', [
             Left(ctrl),
             Middle(ctrl),
-            //Right(ctrl),
+            Right(ctrl),
         ])
     }
 };
@@ -583,7 +592,8 @@ module.exports = Left;
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
-    return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
+    return (!ctrl.request.ready()?(
+        {tag: "div", attrs: {className:"mid"}, children: [
             {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
         ]}):(
         (ctrl.request.data().products.length < 1)?(
@@ -682,7 +692,7 @@ var Middle =  function(ctrl){
 
             {tag: "div", attrs: {className:"categoryWr clearfix"}, children: [
                 {tag: "div", attrs: {className:"clearfix"}, children: [
-                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category1')}).name, " (", ctrl.total(), ")"]}, 
+                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category1')}).name]}, 
                     {tag: "div", attrs: {className:"fr"}, children: [
                         "Sắp xếp sản phẩm:", 
                         {tag: "select", attrs: {class:"select", id:"sortMode"}, children: [
@@ -704,7 +714,12 @@ var Middle =  function(ctrl){
 
                     ]}, 
                     {tag: "br", attrs: {}}, 
-                    fn.buildPageNav(ctrl.currPage, ctrl.maxPage())
+                    {tag: "br", attrs: {}}, 
+                    fn.buildPageNav(ctrl.currPage, ctrl.maxPage()), 
+                    {tag: "div", attrs: {className:"total fl clearfix"}, children: [
+                        ctrl.total(), " Sản phẩm"
+                    ]}
+
                 ]}, 
 
 
@@ -762,9 +777,11 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        {tag: "div", attrs: {className:"productWrap "}, children: [
+        {tag: "div", attrs: {className:"productWrap clearfix"}, children: [
             !ctrl.request.ready()?(
-                {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+                {tag: "div", attrs: {className:"mid"}, children: [
+                    {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+                ]}
             ):(
                 (ctrl.product().length < 0)?(
                     {tag: "div", attrs: {}, children: [
@@ -824,14 +841,18 @@ var Middle =  function(ctrl){
         ]}):(
         (ctrl.request.data().length < 1)?(
             {tag: "div", attrs: {className:"mid"}, children: [
-                {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
+                {tag: "div", attrs: {className:"categoryWr"}, children: [
+                    {tag: "div", attrs: {className:"clearfix"}, children: [
+                        {tag: "h3", attrs: {}, children: ["Không tìm thấy \"", m.route.param('_kw'), "\" trong sản phẩm nào!"]}
+                    ]}
+                ]}
             ]}
         ):(
         {tag: "div", attrs: {className:"mid"}, children: [
 
             {tag: "div", attrs: {className:"categoryWr "}, children: [
                 {tag: "div", attrs: {className:"clearfix"}, children: [
-                    {tag: "h3", attrs: {}, children: ["Tìm kiếm: \"", m.route.param('_kw'), "\""]}, 
+                    {tag: "h3", attrs: {}, children: ["Tìm kiếm: ", m.route.param('_kw')]}, 
                     {tag: "div", attrs: {className:"fr"}, children: [
                         "Sắp xếp sản phẩm:", 
                         {tag: "select", attrs: {class:"select", id:"sortMode"}, children: [
@@ -851,6 +872,13 @@ var Middle =  function(ctrl){
                             {tag: "option", attrs: {value:"56"}, children: ["56"]}
                         ]}
 
+                    ]}, 
+
+                    {tag: "br", attrs: {}}, 
+                    {tag: "br", attrs: {}}, 
+                    fn.buildPageNav(ctrl.currPage, ctrl.maxPage()), 
+                    {tag: "div", attrs: {className:"total fl clearfix"}, children: [
+                        ctrl.total(), " Sản phẩm"
                     ]}
                 ]}, 
                 (ctrl.products().length<1)?(

@@ -87,15 +87,29 @@ trait ProductRepo {
 
   import Product.{ BSONFields => F }
 
-  def search(kw: String, nb: Int) = {
-    productTube.coll.find(
-      BSONDocument("$or" -> BSONArray(
-        BSONDocument("core.code" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i")),
-        BSONDocument("core.name" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i"))
-      ))
-    )
-    .cursor[BSONDocument]()
-    .collect[List](nb)
+  def search(kw: String, nb: Int, page: Int) = {
+    for {
+      products <- {
+        productTube.coll.find(
+
+          BSONDocument("$or" -> BSONArray(
+            BSONDocument("core.code" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i")),
+            BSONDocument("core.name" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i"))
+          ))
+        )
+          .options(QueryOpts((page - 1) * nb))
+          .cursor[BSONDocument]()
+          .collect[List](nb)
+      }
+      number <- {
+        productTube.coll.count(
+          Some(BSONDocument("$or" -> BSONArray(
+            BSONDocument("core.code" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i")),
+            BSONDocument("core.name" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i"))
+          )))
+        )
+      }
+    } yield BSONDocument("products" -> products, "total" -> number, "page" -> page, "totalPage" -> Math.ceil(number.toDouble/nb))
   }
 
   def getByCategory(cate: String, nb: Int, page: Int)= {

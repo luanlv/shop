@@ -57,8 +57,16 @@ object Application extends LilaController{
   }
 
   def search = Open { implicit ctx =>
-    var kw = get("_kw").get
-    val products = ProductRepo.search(kw, 20).map(Json.toJson(_)).await.toString
+    val page = get("_page") match{
+      case Some(int) => int.toInt
+      case None      => 1
+    }
+    var kw = get("_kw") match {
+      case Some(st) => st
+      case None      => ""
+    }
+
+    val products = ProductRepo.search(kw, 20, page).map(Json.toJson(_)).await.toString
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.cached.getMenu("listMenu").map {
       menu => Ok(views.html.index.search(menu, allCategorys, products, kw))

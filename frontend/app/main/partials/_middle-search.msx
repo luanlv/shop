@@ -6,14 +6,18 @@ var Middle =  function(ctrl){
         </div>):(
         (ctrl.request.data().length < 1)?(
             <div className="mid">
-                <div className="noProduct">Hiện chưa có sản phẩm nào !</div>
+                <div className="categoryWr">
+                    <div className="clearfix">
+                        <h3>Không tìm thấy "{m.route.param('_kw')}" trong sản phẩm nào!</h3>
+                    </div>
+                </div>
             </div>
         ):(
         <div className="mid">
 
             <div className="categoryWr ">
                 <div className="clearfix">
-                    <h3>Tìm kiếm: "{m.route.param('_kw')}"</h3>
+                    <h3>Tìm kiếm: {m.route.param('_kw')}</h3>
                     <div className="fr">
                         Sắp xếp sản phẩm:
                         <select class="select" id="sortMode">
@@ -33,6 +37,13 @@ var Middle =  function(ctrl){
                             <option value="56">56</option>
                         </select>
 
+                    </div>
+
+                    <br/>
+                    <br/>
+                    {fn.buildPageNav(ctrl.currPage, ctrl.maxPage())}
+                    <div className="total fl clearfix">
+                        {ctrl.total()} Sản phẩm
                     </div>
                 </div>
                 {(ctrl.products().length<1)?(

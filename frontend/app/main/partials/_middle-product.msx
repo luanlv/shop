@@ -5,9 +5,11 @@ var Middle =  function(ctrl){
     var status_ok = ctrl.product().status === "ok";
 
     return (
-        <div className="productWrap ">
+        <div className="productWrap clearfix">
             {!ctrl.request.ready()?(
-                <div class="loader">Loading...</div>
+                <div className="mid">
+                    <div class="loader">Loading...</div>
+                </div>
             ):(
                 (ctrl.product().length < 0)?(
                     <div>
