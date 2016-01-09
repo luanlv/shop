@@ -355,7 +355,11 @@ var Category = {
             ctrl.total(ctrl.request.data().total);
             ctrl.currPage = m.prop(ctrl.request.data().page);
             ctrl.maxPage = m.prop(ctrl.request.data().totalPage);
-            ctrl.slides(ctrl.request.data().products.slice(2, 6));
+            if(ctrl.request.data().products.length >3 ) {
+                ctrl.slides(ctrl.request.data().products.slice(0, 4));
+            } else {
+                ctrl.slides(ctrl.request.data().products);
+            }
             ctrl.currentSlide(ctrl.slides()[0]);
             ctrl.maxSlide = ctrl.slides().length;
         };
@@ -839,7 +843,7 @@ var Middle =  function(ctrl){
     return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
             {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
         ]}):(
-        (ctrl.request.data().length < 1)?(
+        (ctrl.request.data().products.length < 1)?(
             {tag: "div", attrs: {className:"mid"}, children: [
                 {tag: "div", attrs: {className:"categoryWr"}, children: [
                     {tag: "div", attrs: {className:"clearfix"}, children: [

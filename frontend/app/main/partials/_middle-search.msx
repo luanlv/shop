@@ -4,7 +4,7 @@ var Middle =  function(ctrl){
     return (!ctrl.request.ready()?(<div className="mid">
             <div class="loader">Loading...</div>
         </div>):(
-        (ctrl.request.data().length < 1)?(
+        (ctrl.request.data().products.length < 1)?(
             <div className="mid">
                 <div className="categoryWr">
                     <div className="clearfix">
