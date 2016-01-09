@@ -1,12 +1,11 @@
 var Left = require('./partials/_left.msx');
-var Middle = require('./partials/_middle.msx');
-var Right = require('./partials/_right-tmp.msx');
+var Middle = require('./partials/_middle-search.msx');
+var Right = require('./partials/_right.msx');
 var fn = require('../core/fn.msx');
 
-var Home = {
+var Search = {
     controller: function() {
-        m.redraw.strategy("diff");
-
+        m.redraw.strategy("diff")
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
@@ -20,13 +19,13 @@ var Home = {
         ctrl.ok = false;
         ctrl.setup = function(){
             ctrl.products(ctrl.request.data());
-            ctrl.slides(ctrl.request.data()[0].value.products.slice(2, 6));
+            ctrl.slides(ctrl.request.data().slice(2, 6));
             ctrl.currentSlide(ctrl.slides()[0]);
             ctrl.maxSlide = ctrl.slides().length;
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductsForIndex"}, ctrl.products, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/search?_kw=" + m.route.param('_kw')}, ctrl.products, ctrl.setup);
         } else {
             ctrl.request = {
                 ready: function () {
@@ -37,15 +36,20 @@ var Home = {
             ctrl.setup()
         }
         window.demoSlide = [];
+        //console.log(window.demoSlide.length)
+        //ctrl.data = m.prop([]);
+        //m.request({method: "GET", url: "/data1.json"}).then(function(res){
+        //  ctrl.data(res.data)
+        //});
     },
     view: function(ctrl) {
         return m('div', [
             Left(ctrl),
             Middle(ctrl),
-            Right(ctrl),
+            //Right(ctrl),
         ])
     }
 };
 
 
-module.exports = Home;
+module.exports = Search;

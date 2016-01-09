@@ -124,5 +124,71 @@ fn.requestWithFeedback = function(args, bind, fn) {
     }
 };
 
+fn.changePage = function(currPage, newPage, maxPage){
+    var url = m.route();
+    var newUrl;
+    var currParam = m.route.param('_page');
+    if(url.indexOf('?') < 0){
+        url += '?';
+    }
+    console.log(currParam)
+    if(currParam === undefined){
+        newUrl = url + '_page=' + newPage;
+    } else {
+        var oldParam = '_page=' + currParam;
+        var newParam = '_page=' + newPage;
+        newUrl = url.toString().replace(oldParam, newParam);
+    }
+    m.route(newUrl);
+}
+
+fn.buildPageNav = function(currPage, maxPage){
+  return (
+    <div className="pageNav clearfix">
+          <div className="pagePrev bo bo-3"
+            onclick={
+            function(){
+                if(currPage() > 1){
+                    fn.changePage(currPage(), currPage() - 1, maxPage)
+                }
+            }
+            }
+          >{"<<"}</div>
+          <input className="currpage bo-5"
+                 onchange = {m.withAttr("value", currPage)}
+                 config={
+                    function(el, isInited){
+                        if(!isInited){
+                            el.value = currPage()
+                        }
+                    }
+                 }
+                 onkeydown={
+                    function(){
+                        if (event.keyCode == 13) {
+                            if(event.target.value > maxPage || event.target.value < 1 || event.target.value === currPage()){
+                               event.target.value = currPage()
+                            } else {
+                                fn.changePage(currPage, event.target.value, maxPage)
+                            }
+                        }
+                    }
+                 }
+          />
+           <div>/</div>
+          <div className="currPage" >{maxPage}</div>
+          <div className="pageNext bo bo-3"
+            onclick={
+            function(){
+                    if(currPage() < maxPage){
+                        fn.changePage(currPage, currPage() + 1, maxPage)
+                    }
+                }
+            }
+          >{">>"}</div>
+    </div>
+  )
+};
+
 
 module.exports = fn;

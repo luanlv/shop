@@ -33,7 +33,11 @@ object API extends LilaController {
   }
 
   def getProducts(category: String) = Open { implicit ctx =>
-    lila.product.Env.current.cached.getByCategoryCached(category, 20).map {
+    val page = get("_page") match{
+      case Some(int) => int.toInt
+      case None      => 1
+    }
+    lila.product.Env.current.cached.getByCategoryCached(category, 20, page).map {
       products => {
         Ok(Json.toJson(products))
       }
@@ -44,7 +48,15 @@ object API extends LilaController {
     Env.product.cached.getAllForIndex.map {
       result => Ok(Json.toJson(result))
     }
+  }
 
+  def search = Open { implicit ctx =>
+    var kw = get("_kw").get
+    ProductRepo.search(kw, 20) map {
+      products => {
+        Ok(Json.toJson(products))
+      }
+    }
   }
 
 }

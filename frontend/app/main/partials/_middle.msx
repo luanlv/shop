@@ -63,7 +63,7 @@ var Middle =  function(ctrl){
                                     }
                                 };
 
-                                run()
+                                run();
                                 //setTimeout(function(){
                                 //    el.classList.remove("fadeOutLeft")
                                 //    el.classList.remove("animated")
@@ -99,9 +99,9 @@ var Middle =  function(ctrl){
             {ctrl.products().map(function(listProducts){
                 return (
                     <div className="productWr">
-                        <h3>{listProducts.id}</h3>
+                        <h3><a href={urls[listProducts.id]} config={m.route}>{allCategory.getItemByParam({slug: listProducts.id}).name} ({listProducts.value.total} Sản phẩm)</a> </h3>
                             <div className="listProduct clearfix">
-                                {listProducts.value.map(function(item){
+                                {listProducts.value.products.map(function(item){
                                     return (
                                         <div className="itemWr">
                                             <a href={(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug)} config={m.route}>

@@ -17,7 +17,7 @@ var Right = function(ctrl){
             <div className="saleWr ">
                 <h3>SẢN PHẨM KHUYẾN MÃI</h3>
                 {(ctrl.products().length<1)?(
-                    <div className="loading">LOADING !!!</div>
+                    ""
                 ):(
                     <div className="listSale">
                         {ctrl.products().map(function(item){

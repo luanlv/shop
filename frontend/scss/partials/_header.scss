@@ -22,23 +22,82 @@
 }
 
 .search {
-  padding: 25px 0 0 230px;
+  padding-top: 25px;
   height: 20px;
-  display: table-cell;
+  float: right;
   vertical-align: middle;
-  input[type="text"] {
-    width: 250px;
-    padding:6px 15px;
-    border: 1px solid #dbdbdb;
-    &:hover {
-      border-color: $hover-link-color;
+
+  input {
+    border: 1px solid #CCCCCC;
+    placeholder : "First name";
+    width: 300px;
+    height: 35px;
+    color: #CCCCCC;
+    background-repeat: no-repeat;
+    padding: 0px 50px 0px 10px;
+    margin: 0;
+
+    display: inline-block;
+    text-align: start;
+    &:focus {
+      border: 1px solid #0c9adc;
+      color: #333;
     }
   }
-  input[type="button"] {
-    width: 80px;
-    padding:5px 5px;
-
+  .searchWr{
+    position: relative;
+    background: blue;
+    float: left;
   }
+
+  .search-icon {
+    position: absolute;
+    border-left: 1px solid #ddd;
+    border-right: none;
+    top: 7px;
+    right: 0;
+    width: 40px;
+    height: 21px;
+    //background: #000;
+    cursor: pointer;
+  }
+
+  .cartWr {
+    float: left;
+    height: 35px;
+    width: 120px;
+    display: inline;
+    border-left: none;
+    background: #0c9adc;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 12px;
+    .cart-icon {
+      float: left;
+      height: 35px;
+      width: 35px;
+    }
+
+    .number-items {
+      float: left;
+      line-height:35px;
+      height: 35px;
+      padding: 0 5px 0 10px;
+      vertical-align: middle;
+      align-items: center;
+    }
+    &:hover {
+      background: $hover-link-color;
+    }
+  }
+
+  .userWr{
+    float: left;
+    width: 35px;
+    height: 35px;
+    margin-left: 5px;
+  }
+
 }
 
 .navMenu{

@@ -44,11 +44,24 @@ object Application extends LilaController{
     }
   }
 
-  def category(slug: String, slug2: String, slug3: String) = Action.async {
-    val products = lila.product.Env.current.cached.getByCategoryCached(slug, 20).map(Json.toJson(_)).await.toString
+  def category(slug: String, slug2: String, slug3: String) = Open {  implicit cxt =>
+    val page = get("_page") match{
+      case Some(int) => int.toInt
+      case None      => 1
+    }
+    val products = lila.product.Env.current.cached.getByCategoryCached(slug, 20, page).map(Json.toJson(_)).await.toString
     val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
     lila.setup.Env.current.cached.getMenu("listMenu").map {
       menu => Ok(views.html.index.category(menu, allCategorys, products))
+    }
+  }
+
+  def search = Open { implicit ctx =>
+    var kw = get("_kw").get
+    val products = ProductRepo.search(kw, 20).map(Json.toJson(_)).await.toString
+    val allCategorys = lila.product.Env.current.cateCached.getAllCategoryCached.await.toString
+    lila.setup.Env.current.cached.getMenu("listMenu").map {
+      menu => Ok(views.html.index.search(menu, allCategorys, products, kw))
     }
   }
 

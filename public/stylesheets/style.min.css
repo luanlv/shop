@@ -153,12 +153,10 @@ img {
   width: 1000px;
   padding-top: 30px;
   margin: 0 auto;
-  height: auto;
-  min-height: 800px; }
+  height: auto; }
 
 .left, .mid, .right {
-  float: left;
-  min-height: 800px; }
+  float: left; }
 
 .left {
   width: 180px;
@@ -176,7 +174,6 @@ img {
 
 .productWrap {
   float: left;
-  width: 800px;
   margin-left: 20px; }
 
 .slider {
@@ -263,19 +260,67 @@ img {
   height: 40px; }
 
 .search {
-  padding: 25px 0 0 230px;
+  padding-top: 25px;
   height: 20px;
-  display: table-cell;
+  float: right;
   vertical-align: middle; }
-  .search input[type="text"] {
-    width: 250px;
-    padding: 6px 15px;
-    border: 1px solid #dbdbdb; }
-    .search input[type="text"]:hover {
-      border-color: #7FDBFF; }
-  .search input[type="button"] {
-    width: 80px;
-    padding: 5px 5px; }
+  .search input {
+    border: 1px solid #CCCCCC;
+    placeholder: "First name";
+    width: 300px;
+    height: 35px;
+    color: #CCCCCC;
+    background-repeat: no-repeat;
+    padding: 0px 50px 0px 10px;
+    margin: 0;
+    display: inline-block;
+    text-align: start; }
+    .search input:focus {
+      border: 1px solid #0c9adc;
+      color: #333; }
+  .search .searchWr {
+    position: relative;
+    background: blue;
+    float: left; }
+  .search .search-icon {
+    position: absolute;
+    border-left: 1px solid #ddd;
+    border-right: none;
+    top: 7px;
+    right: 0;
+    width: 40px;
+    height: 21px;
+    cursor: pointer; }
+  .search .cartWr {
+    float: left;
+    height: 35px;
+    width: 120px;
+    display: inline;
+    border-left: none;
+    background: #0c9adc;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 12px; }
+    .search .cartWr .cart-icon {
+      float: left;
+      height: 35px;
+      width: 35px; }
+    .search .cartWr .number-items {
+      float: left;
+      line-height: 35px;
+      height: 35px;
+      padding: 0 5px 0 10px;
+      vertical-align: middle;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center; }
+    .search .cartWr:hover {
+      background: #7FDBFF; }
+  .search .userWr {
+    float: left;
+    width: 35px;
+    height: 35px;
+    margin-left: 5px; }
 
 .navMenu {
   height: 40px;
@@ -422,7 +467,7 @@ img {
 
 .listProduct {
   border: 1px solid #FF4136;
-  height: 540px;
+  max-height: 540px;
   padding-left: 7px; }
 
 .itemWr {
@@ -511,6 +556,26 @@ img {
   font-weight: bold;
   font-size: 18px;
   margin-top: 30px; }
+
+.pageNav {
+  margin-top: 20px;
+  float: right;
+  font-size: 16px;
+  line-height: 20px; }
+  .pageNav > * {
+    margin-left: 5px; }
+  .pageNav input {
+    text-align: center;
+    float: left;
+    width: 20px; }
+  .pageNav div {
+    float: left; }
+  .pageNav .pagePrev, .pageNav .pageNext {
+    width: 35px;
+    padding: 0px 7px 0px 7px;
+    cursor: pointer; }
+    .pageNav .pagePrev:hover, .pageNav .pageNext:hover {
+      background: #ddd; }
 
 .categoryWr h3 {
   float: left;

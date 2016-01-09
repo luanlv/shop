@@ -11,7 +11,7 @@
 
 .listProduct {
   border: 1px solid #FF4136;
-  height: 540px;
+  max-height: 540px;
   padding-left: 7px;
 }
 
@@ -141,4 +141,31 @@
   font-weight : bold;
   font-size: 18px;
   margin-top: 30px;
+}
+
+.pageNav {
+  margin-top: 20px;
+  float: right;
+  font-size: 16px;
+  line-height: 20px;
+  >* {
+    margin-left: 5px;
+  }
+  input {
+    text-align: center;
+    float: left;
+    width: 20px;
+  }
+  div {
+    float: left;
+  }
+
+  .pagePrev, .pageNext {
+    width: 35px;
+    padding: 0px 7px 0px 7px;
+    cursor: pointer;
+    &:hover {
+      background: #ddd;
+    }
+  }
 }

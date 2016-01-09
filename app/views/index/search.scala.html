@@ -1,16 +1,15 @@
-@(listMenu: String, allCategory: String, product: String)
+@(listMenu: String, allCategory: String, listProduct: String, _kw: String)
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Document</title>
-
         @cssTag("style.min.css")
         @cssTag("animate.min.css")
             <!--[if lt IE 9]>
               <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.4.1/es5-shim.min.js"></script>
             <![endif]-->
-    </head>
+        </head>
     <body>
         <div id="header"></div>
         <div id="main" class="clearfix">
@@ -21,21 +20,22 @@
         @jsTag("mithril/mithril.min.js")
         @jsTag("main.js")
         @jsTag("app.js")
-        <script >
+        <script>/* <![CDATA[ */
             var menu = @Html(listMenu);
             var allCategory = @Html(allCategory);
             var urls = buildUrls(allCategory);
-            var product = [];
+            var listProduct1 = [];
+            var _kw = "";
+            _kw = "@_kw";
 
-//            setTimeout(function(){
-            product = @Html(product);
+            //            setTimeout(function(){
+            listProduct1 = @Html(listProduct);
             m.redraw();
-//            }, 0);
+            //            }, 0);
 
-//            var demoSlide = listProduct1.slice(2, 6);
+            var demoSlide = listProduct1;
 
             m.mount(document.querySelector('#header'), window.Nav);
-
             m.route(document.querySelector('#app'), "/", {
                 "/": window.Main.Home,
                 "/dashboard": window.Main.Dashboard,
@@ -48,8 +48,7 @@
 
 
 
-
-        </script>
+        /* ]]> */</script>
 
 
     </body>

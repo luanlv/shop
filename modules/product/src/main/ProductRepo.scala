@@ -87,14 +87,42 @@ trait ProductRepo {
 
   import Product.{ BSONFields => F }
 
-  def getByCategory(cate: String, nb: Int)= {
+  def search(kw: String, nb: Int) = {
+    productTube.coll.find(
+      BSONDocument("$or" -> BSONArray(
+        BSONDocument("core.code" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i")),
+        BSONDocument("core.name" -> BSONDocument("$regex" -> (".*" + kw + ".*"), "$options" -> "-i"))
+      ))
+    )
+    .cursor[BSONDocument]()
+    .collect[List](nb)
+  }
+
+  def getByCategory(cate: String, nb: Int, page: Int)= {
     val listIds = Env.current.cateCached.listIdsRamCached(cate).await
-      productTube.coll.find(
-        BSONDocument("sku.parent_id" -> BSONDocument("$in" -> listIds)),
-        BSONDocument("_id" -> 0, "slug" -> 1, "sku.slug" -> 1, "core" -> 1, "info.image" -> BSONDocument("$slice" -> 1), "extra.saleOff1" -> 1, "extra.saleOff2" -> 1, "extra.note" -> 1)
-      )
-      .cursor[BSONDocument]()
-      .collect[List](nb)
+    for {
+      products <- {
+        productTube.coll.find(
+          BSONDocument("sku.parent_id" -> BSONDocument("$in" -> listIds)),
+          BSONDocument("_id" -> 0, "slug" -> 1, "sku.slug" -> 1, "core" -> 1, "info.image" -> BSONDocument("$slice" -> 1), "extra.saleOff1" -> 1, "extra.saleOff2" -> 1, "extra.note" -> 1)
+        )
+          .options(QueryOpts((page - 1) * nb))
+          .cursor[BSONDocument]()
+          .collect[List](nb)
+      }
+      number <- {
+        productTube.coll.count(
+          Some(BSONDocument("sku.parent_id" -> BSONDocument("$in" -> listIds)))
+        )
+      }
+    } yield BSONDocument("products" -> products, "total" -> number, "page" -> page, "totalPage" -> Math.ceil(number.toDouble/nb))
+  }
+
+  def countByCategory(cate: String) = {
+    val listIds = Env.current.cateCached.listIdsRamCached(cate).await
+    productTube.coll.count(
+      Some(BSONDocument("sku.parent_id" -> BSONDocument("$in" -> listIds)))
+    )
   }
 
   def getProductByCate(cate: String, nb: Int): Fu[List[Product]] =

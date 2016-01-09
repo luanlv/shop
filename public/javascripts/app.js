@@ -2,7 +2,7 @@
 var Footer = Footer || {};
 
 Footer.controller = function(){
-
+    m.redraw.strategy("diff");
 };
 
 Footer.view = function(ctrl){
@@ -20,25 +20,63 @@ Main.Home = require('./main/_home.msx');
 Main.Dashboard = require('./main/_dashboard.msx');
 Main.Product = require('./main/_product.msx');
 Main.Category = require('./main/_category.msx');
+Main.Search = require('./main/_search.msx');
 
 module.exports = Main;
-},{"./main/_category.msx":7,"./main/_dashboard.msx":8,"./main/_home.msx":9,"./main/_product.msx":10}],3:[function(require,module,exports){
+},{"./main/_category.msx":7,"./main/_dashboard.msx":8,"./main/_home.msx":9,"./main/_product.msx":10,"./main/_search.msx":11}],3:[function(require,module,exports){
 
 
 var Nav = {};
 Nav.controller = function(){
+    m.redraw.strategy("diff");
+    var ctrl = this;
+    if(window._kw !== undefined ) {
+        ctrl._kw = window._kw;
+    } else {
+        ctrl._kw = ""
+    }
     //setInterval(function(){m.redraw()}, 2000)
 };
-Nav.view = function(){
+Nav.view = function(ctrl){
     //console.log("render view");
     return (
         {tag: "div", attrs: {className:"h-container"}, children: [
             {tag: "div", attrs: {className:"h-left"}}, 
             {tag: "div", attrs: {className:"h-right"}, children: [
                 {tag: "div", attrs: {className:"h-top"}, children: [
-                    {tag: "div", attrs: {className:"search"}, children: [
-                        {tag: "input", attrs: {type:"text", placeholder:"Nhập từ khóa"}}, 
-                        {tag: "input", attrs: {type:"button", value:"Search"}}
+                    {tag: "div", attrs: {className:"search clearfix"}, children: [
+                        {tag: "div", attrs: {className:"searchWr"}, children: [
+                            {tag: "form", attrs: {action:"tim-kiem", method:"get"}, children: [
+                            {tag: "input", attrs: {type:"text", id:"_kw", name:"_kw", 
+                                   onkeydown:function(){
+                                        if (event.keyCode == 13) {
+                                                event.preventDefault();
+                                                m.route("/tim-kiem?_kw=" + event.target.value);
+                                            }
+                                        }, 
+                                    
+                                   config:
+                                      function(el, isInited){
+                                        if(!isInited){
+                                            if(ctrl._kw.length>0){
+                                                el.value = ctrl._kw;
+                                            }
+                                        }
+                                      }
+                                   }
+                            }, 
+                            {tag: "span", attrs: {className:"search-icon"}}
+                            ]}
+                        ]}, 
+                        {tag: "a", attrs: {href:"#", className:"cartWr clearfix"}, children: [
+
+                            {tag: "span", attrs: {className:"cart-icon"}}, 
+                            {tag: "span", attrs: {className:"number-items"}, children: [
+                                "(0) Mục"
+                            ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"userWr bo bo-5"}
+                        }
                     ]}
 
                 ]}, 
@@ -196,6 +234,72 @@ fn.requestWithFeedback = function(args, bind, fn) {
     }
 };
 
+fn.changePage = function(currPage, newPage, maxPage){
+    var url = m.route();
+    var newUrl;
+    var currParam = m.route.param('_page');
+    if(url.indexOf('?') < 0){
+        url += '?';
+    }
+    console.log(currParam)
+    if(currParam === undefined){
+        newUrl = url + '_page=' + newPage;
+    } else {
+        var oldParam = '_page=' + currParam;
+        var newParam = '_page=' + newPage;
+        newUrl = url.toString().replace(oldParam, newParam);
+    }
+    m.route(newUrl);
+}
+
+fn.buildPageNav = function(currPage, maxPage){
+  return (
+    {tag: "div", attrs: {className:"pageNav clearfix"}, children: [
+          {tag: "div", attrs: {className:"pagePrev bo bo-3", 
+            onclick:
+            function(){
+                if(currPage() > 1){
+                    fn.changePage(currPage(), currPage() - 1, maxPage)
+                }
+            }
+            
+          }, children: ["<<"]}, 
+          {tag: "input", attrs: {className:"currpage bo-5", 
+                 onchange:m.withAttr("value", currPage), 
+                 config:
+                    function(el, isInited){
+                        if(!isInited){
+                            el.value = currPage()
+                        }
+                    }, 
+                 
+                 onkeydown:
+                    function(){
+                        if (event.keyCode == 13) {
+                            if(event.target.value > maxPage || event.target.value < 1 || event.target.value === currPage()){
+                               event.target.value = currPage()
+                            } else {
+                                fn.changePage(currPage, event.target.value, maxPage)
+                            }
+                        }
+                    }
+                 }
+          }, 
+           {tag: "div", attrs: {}, children: ["/"]}, 
+          {tag: "div", attrs: {className:"currPage"}, children: [maxPage]}, 
+          {tag: "div", attrs: {className:"pageNext bo bo-3", 
+            onclick:
+            function(){
+                    if(currPage() < maxPage){
+                        fn.changePage(currPage, currPage() + 1, maxPage)
+                    }
+                }
+            
+          }, children: [">>"]}
+    ]}
+  )
+};
+
 
 module.exports = fn;
 
@@ -234,6 +338,8 @@ var Category = {
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
         ctrl.products = m.prop([]);
+        ctrl.total = m.prop(0);
+        ctrl.maxPage = m.prop(0);
         ctrl.slides = m.prop([]);
         ctrl.current = 0;
 
@@ -242,14 +348,17 @@ var Category = {
         ctrl.loading = true;
         ctrl.ok = false;
         ctrl.setup = function(){
-            ctrl.products(ctrl.request.data());
-            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.products(ctrl.request.data().products);
+            ctrl.total(ctrl.request.data().total);
+            ctrl.currPage = m.prop(ctrl.request.data().page);
+            ctrl.maxPage = m.prop(ctrl.request.data().totalPage);
+            ctrl.slides(ctrl.request.data().products.slice(2, 6));
             ctrl.currentSlide(ctrl.slides()[0]);
             ctrl.maxSlide = ctrl.slides().length;
         };
 
         if(window.demoSlide === undefined || window.demoSlide.length == 0) {
-            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category1')}, ctrl.products, ctrl.setup);
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/getProductInCategory/" + m.route.param('category1') + "?" + ((m.route.param('_page') !== undefined)?("_page=" + m.route.param("_page")):"")}, ctrl.products, ctrl.setup);
         } else {
                 ctrl.request = {
                     ready: function () {
@@ -277,7 +386,7 @@ var Category = {
 
 
 module.exports = Category;
-},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-category.msx":12,"./partials/_right.msx":16}],8:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle-category.msx":13,"./partials/_right.msx":18}],8:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right.msx');
@@ -307,7 +416,7 @@ var Dashboard = {
 };
 
 module.exports = Dashboard;
-},{"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right.msx":16}],9:[function(require,module,exports){
+},{"./partials/_left.msx":12,"./partials/_middle.msx":16,"./partials/_right.msx":18}],9:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle.msx');
 var Right = require('./partials/_right-tmp.msx');
@@ -315,8 +424,8 @@ var fn = require('../core/fn.msx');
 
 var Home = {
     controller: function() {
-        m.redraw.strategy("diff")
-        console.log("run home controller")
+        m.redraw.strategy("diff");
+
         var ctrl = this;
         //ctrl.slides = m.prop(window.demoSlide);
         ctrl.currentSlide = m.prop({});
@@ -330,7 +439,7 @@ var Home = {
         ctrl.ok = false;
         ctrl.setup = function(){
             ctrl.products(ctrl.request.data());
-            ctrl.slides(ctrl.request.data()[0].value.slice(2, 6));
+            ctrl.slides(ctrl.request.data()[0].value.products.slice(2, 6));
             ctrl.currentSlide(ctrl.slides()[0]);
             ctrl.maxSlide = ctrl.slides().length;
         };
@@ -349,7 +458,6 @@ var Home = {
         window.demoSlide = [];
     },
     view: function(ctrl) {
-        console.log("running view")
         return m('div', [
             Left(ctrl),
             Middle(ctrl),
@@ -360,7 +468,7 @@ var Home = {
 
 
 module.exports = Home;
-},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle.msx":14,"./partials/_right-tmp.msx":15}],10:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle.msx":16,"./partials/_right-tmp.msx":17}],10:[function(require,module,exports){
 var Left = require('./partials/_left.msx');
 var Middle = require('./partials/_middle-product.msx');
 var Right = require('./partials/_right.msx');
@@ -399,7 +507,63 @@ var Product = {
 
 
 module.exports = Product;
-},{"../core/fn.msx":5,"./partials/_left.msx":11,"./partials/_middle-product.msx":13,"./partials/_right.msx":16}],11:[function(require,module,exports){
+},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle-product.msx":14,"./partials/_right.msx":18}],11:[function(require,module,exports){
+var Left = require('./partials/_left.msx');
+var Middle = require('./partials/_middle-search.msx');
+var Right = require('./partials/_right.msx');
+var fn = require('../core/fn.msx');
+
+var Search = {
+    controller: function() {
+        m.redraw.strategy("diff")
+        var ctrl = this;
+        //ctrl.slides = m.prop(window.demoSlide);
+        ctrl.currentSlide = m.prop({});
+        ctrl.products = m.prop([]);
+        ctrl.slides = m.prop([]);
+        ctrl.current = 0;
+
+        //ctrl.currentSlide(window.demoSlide[0]);
+
+        ctrl.loading = true;
+        ctrl.ok = false;
+        ctrl.setup = function(){
+            ctrl.products(ctrl.request.data());
+            ctrl.slides(ctrl.request.data().slice(2, 6));
+            ctrl.currentSlide(ctrl.slides()[0]);
+            ctrl.maxSlide = ctrl.slides().length;
+        };
+
+        if(window.demoSlide === undefined || window.demoSlide.length == 0) {
+            ctrl.request = fn.requestWithFeedback({method: "GET", url: "/api/search?_kw=" + m.route.param('_kw')}, ctrl.products, ctrl.setup);
+        } else {
+            ctrl.request = {
+                ready: function () {
+                    return true
+                },
+                data: m.prop(window.demoSlide)
+            };
+            ctrl.setup()
+        }
+        window.demoSlide = [];
+        //console.log(window.demoSlide.length)
+        //ctrl.data = m.prop([]);
+        //m.request({method: "GET", url: "/data1.json"}).then(function(res){
+        //  ctrl.data(res.data)
+        //});
+    },
+    view: function(ctrl) {
+        return m('div', [
+            Left(ctrl),
+            Middle(ctrl),
+            //Right(ctrl),
+        ])
+    }
+};
+
+
+module.exports = Search;
+},{"../core/fn.msx":5,"./partials/_left.msx":12,"./partials/_middle-search.msx":15,"./partials/_right.msx":18}],12:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 var data = require('../../core/data.js');
 
@@ -415,14 +579,14 @@ var Left = function(ctrl){
 
 
 module.exports = Left;
-},{"../../core/data.js":4,"../../core/fn.msx":5}],12:[function(require,module,exports){
+},{"../../core/data.js":4,"../../core/fn.msx":5}],13:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
     return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
             {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
         ]}):(
-        (ctrl.request.data().length < 1)?(
+        (ctrl.request.data().products.length < 1)?(
             {tag: "div", attrs: {className:"mid"}, children: [
                 {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
             ]}
@@ -432,10 +596,10 @@ var Middle =  function(ctrl){
 
                 {tag: "div", attrs: {className:"sliderWr", 
                      config:
-                        function(el, isInited){
+                        function(el, isInited, ctx){
                             if(!isInited){
-                                var preloadedAllImages = false;
-                                var onHover = false;
+                                ctx.preloadedAllImages = false;
+                                ctx.running = false;
                                 var nextSlide = function(){
                                     if(ctrl.current == (ctrl.maxSlide - 1 )){
                                         ctrl.current = 0;
@@ -447,49 +611,53 @@ var Middle =  function(ctrl){
 
                                 };
 
-                                var slideOut, slideIn;
-
-                                slideOut = setInterval(function slide(){
-                                    if(!preloadedAllImages){
-                                        fn.preloadImages([ctrl.slides()[ctrl.current+1].info.image[0].origin]);
-                                        if( ctrl.current + 1 === ctrl.maxSlide - 1) preloadedAllImages = true;
-                                    }
-                                    if(!onHover){
-                                        el.classList.add("fadeOutLeft");
-                                        el.classList.add("animated");
-                                        slideIn = setTimeout(function(){
-                                            nextSlide();
-                                            var animated = el.querySelectorAll('.animated');
-                                            for(var i = 0; i < animated.length; i++){
-                                                animated[i].classList.remove("animated");
-                                                ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
-                                                    if(animated[i].classList.contains(cName)){
-                                                        animated[i].classList.remove(cName);
-
-                                                        animated[i].offsetWidth = animated[i].offsetWidth;
-
-                                                        animated[i].classList.add(cName);
-                                                    }
-                                                });
-                                                animated[i].classList.add("animated");
+                                var slideOut;
+                                var run = function(){
+                                    if(ctx.running == false){
+                                        slideOut = setInterval(function(){
+                                            ctx.running = true;
+                                            if(!ctx.preloadedAllImages){
+                                                fn.preloadImages([ctrl.slides()[ctrl.current+1].info.image[0].origin]);
+                                                if( ctrl.current + 1 === ctrl.maxSlide - 1) ctx.preloadedAllImages = true;
                                             }
-                                            el.classList.remove("fadeOutLeft");
-                                            el.classList.remove("animated");
-                                        }, 700)
-                                    }
-                                }, 3700);
+                                                el.classList.add("fadeOutLeft");
+                                                el.classList.add("animated");
+                                                setTimeout(function(){
+                                                    nextSlide();
+                                                    var animated = el.querySelectorAll('.animated');
+                                                    for(var i = 0; i < animated.length; i++){
+                                                        animated[i].classList.remove("animated");
+                                                        ["fadeInDown", "fadeInLeft", "fadeInUp"].map(function(cName){
+                                                            if(animated[i].classList.contains(cName)){
+                                                                animated[i].classList.remove(cName);
 
+                                                                animated[i].offsetWidth = animated[i].offsetWidth;
+
+                                                                animated[i].classList.add(cName);
+                                                            }
+                                                        });
+                                                        animated[i].classList.add("animated");
+                                                    }
+                                                    el.classList.remove("fadeOutLeft");
+                                                    el.classList.remove("animated");
+                                                }, 700)
+
+                                        }, 3700);
+                                    }
+                                };
+
+                                run();
                                 //setTimeout(function(){
                                 //    el.classList.remove("fadeOutLeft")
                                 //    el.classList.remove("animated")
                                 //}, 4000)
 
                                 el.parentNode.addEventListener('mouseover', function(){
-                                    onHover = true;
+                                    ctx.running = false;
+                                    clearInterval(slideOut)
                                 });
                                 el.parentNode.addEventListener('mouseleave', function(){
-                                    onHover = false;
-
+                                    run();
                                 });
                             }
                         }
@@ -512,9 +680,158 @@ var Middle =  function(ctrl){
 
             ]}, 
 
+            {tag: "div", attrs: {className:"categoryWr clearfix"}, children: [
+                {tag: "div", attrs: {className:"clearfix"}, children: [
+                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category1')}).name, " (", ctrl.total(), ")"]}, 
+                    {tag: "div", attrs: {className:"fr"}, children: [
+                        "Sắp xếp sản phẩm:", 
+                        {tag: "select", attrs: {class:"select", id:"sortMode"}, children: [
+                            {tag: "option", attrs: {value:"by_pass"}, children: ["Mặc định"]}, 
+                            {tag: "option", attrs: {value:"n-1"}, children: ["ID sản phẩm giảm dần"]}, 
+                            {tag: "option", attrs: {value:"1-n"}, children: ["ID sản phẩm tăng dần"]}, 
+                            {tag: "option", attrs: {value:"a-z"}, children: ["Tên sản phẩm từ A-Z"]}, 
+                            {tag: "option", attrs: {value:"z-a"}, children: ["Tên sản phẩm từ Z-A"]}, 
+                            {tag: "option", attrs: {value:"max-min"}, children: ["Giá sản phẩm giảm dần"]}, 
+                            {tag: "option", attrs: {value:"min-max", selected:"selected"}, children: ["Giá sản phẩm tăng dần"]}
+                        ]}, 
+
+                        {tag: "select", attrs: {class:"select", id:"sortLimit"}, children: [
+                            {tag: "option", attrs: {value:"20", selected:"selected"}, children: ["20"]}, 
+                            {tag: "option", attrs: {value:"32"}, children: ["32"]}, 
+                            {tag: "option", attrs: {value:"48"}, children: ["48"]}, 
+                            {tag: "option", attrs: {value:"56"}, children: ["56"]}
+                        ]}
+
+                    ]}, 
+                    {tag: "br", attrs: {}}, 
+                    fn.buildPageNav(ctrl.currPage, ctrl.maxPage())
+                ]}, 
+
+
+
+                (ctrl.products().length<1)?(
+                    {tag: "div", attrs: {className:"loading"}, children: [
+                        "LOADING !!!"
+                    ]}
+                ):(
+                    {tag: "div", attrs: {className:"listProduct inCategory clearfix"}, children: [
+                        ctrl.products().map(function(item){
+                            return (
+
+
+                                    {tag: "div", attrs: {className:"itemWr"}, children: [
+                                        {tag: "a", attrs: {href:(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug), config:m.route}, children: [
+                                        {tag: "div", attrs: {className:"img-item"}, children: [
+                                            {tag: "img", attrs: {src:item.info.image[0].small, alt:""}}
+                                        ]}, 
+
+                                        {tag: "div", attrs: {className:"info-item"}, children: [
+                                            {tag: "div", attrs: {className:"name-item"}, children: [
+                                                item.core.name
+                                            ]}, 
+                                            {tag: "div", attrs: {className:"info-extra-item"}, children: [
+                                                {tag: "span", attrs: {}, children: ["Bán lẻ:"]}, 
+                                                {tag: "div", attrs: {className:"price-item"}, children: [fn.price(item.core.price[0].price), " Đ"]}
+                                            ]}
+                                        ]}
+                                        ]}, 
+                                        {tag: "div", attrs: {className:"side-info"}, children: [
+                                            m.trust(item.extra.note)
+                                        ]}
+                                    ]}
+                            )
+                        })
+                    ]}
+                )
+            ]}, 
+            fn.buildPageNav(ctrl.currPage, ctrl.maxPage())
+
+
+        ]}
+        )
+        )
+    )
+};
+
+module.exports = Middle;
+},{"../../core/fn.msx":5}],14:[function(require,module,exports){
+var fn = require('../../core/fn.msx');
+
+var Middle =  function(ctrl){
+    var status_loading = ctrl.product().status === "loading";
+    var status_ok = ctrl.product().status === "ok";
+
+    return (
+        {tag: "div", attrs: {className:"productWrap "}, children: [
+            !ctrl.request.ready()?(
+                {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+            ):(
+                (ctrl.product().length < 0)?(
+                    {tag: "div", attrs: {}, children: [
+                        {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
+                    ]}
+                ):(
+                    {tag: "div", attrs: {class:true}, children: [
+                        {tag: "div", attrs: {className:"clearfix"}, children: [
+                            {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name]}]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"p-top clearfix"}, children: [
+                            {tag: "div", attrs: {className:"pt-left"}, children: [
+                                {tag: "img", attrs: {src:ctrl.product()[0].info.image[0].small, alt:"", 
+                                    onclick:function(){
+                                            ctrl.zoom=true;
+                                        }
+                                    }
+                                }
+                            ]}, 
+                            {tag: "div", attrs: {className:"pt-right"}, children: [
+                                {tag: "h1", attrs: {className:"name"}, children: [ctrl.product()[0].core.name]}, 
+                                {tag: "div", attrs: {className:"msp"}, children: ["Mã Sản phẩm: ", {tag: "span", attrs: {}, children: [ctrl.product()[0].core.code]}]}, 
+                                {tag: "div", attrs: {className:"price"}, children: ["Giá: ", {tag: "span", attrs: {}, children: [fn.price(ctrl.product()[0].core.price[0].price), " VNĐ"]}]}
+                            ]}
+                        ]}, 
+                        {tag: "div", attrs: {className:"p-bot"}
+
+                        }, 
+                        ctrl.zoom?({tag: "div", attrs: {className:"zoomWr"}, children: [
+                            {tag: "div", attrs: {className:"zoomImageWr noScroll zoomIn animated "}, children: [
+                                {tag: "img", attrs: {class:"", src:ctrl.product()[0].info.image[0].origin, alt:"", 
+                                 onclick:
+                                    function(event){
+                                        //var el = event.target;
+                                        //el.classList.remove("zoomIn");
+                                        //el.classList.add("zoomOut");
+                                        ctrl.zoom = false;
+                                    }
+                                 }
+                                }
+                            ]}
+                        ]}):""
+                    ]}
+                )
+            )
+        ]}
+    )
+};
+
+module.exports = Middle;
+},{"../../core/fn.msx":5}],15:[function(require,module,exports){
+var fn = require('../../core/fn.msx');
+
+var Middle =  function(ctrl){
+    return (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
+            {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
+        ]}):(
+        (ctrl.request.data().length < 1)?(
+            {tag: "div", attrs: {className:"mid"}, children: [
+                {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
+            ]}
+        ):(
+        {tag: "div", attrs: {className:"mid"}, children: [
+
             {tag: "div", attrs: {className:"categoryWr "}, children: [
                 {tag: "div", attrs: {className:"clearfix"}, children: [
-                    {tag: "h3", attrs: {}, children: [window.allCategory.getItemByParam({slug: m.route.param('category1')}).name]}, 
+                    {tag: "h3", attrs: {}, children: ["Tìm kiếm: \"", m.route.param('_kw'), "\""]}, 
                     {tag: "div", attrs: {className:"fr"}, children: [
                         "Sắp xếp sản phẩm:", 
                         {tag: "select", attrs: {class:"select", id:"sortMode"}, children: [
@@ -580,68 +897,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],13:[function(require,module,exports){
-var fn = require('../../core/fn.msx');
-
-var Middle =  function(ctrl){
-    var status_loading = ctrl.product().status === "loading";
-    var status_ok = ctrl.product().status === "ok";
-
-    return (
-        {tag: "div", attrs: {className:"productWrap "}, children: [
-            !ctrl.request.ready()?(
-                {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
-            ):(
-                (ctrl.product().length < 0)?(
-                    {tag: "div", attrs: {}, children: [
-                        {tag: "div", attrs: {className:"noProduct"}, children: ["Hiện chưa có sản phẩm nào !"]}
-                    ]}
-                ):(
-                    {tag: "div", attrs: {class:true}, children: [
-                        {tag: "div", attrs: {className:"clearfix"}, children: [
-                            {tag: "div", attrs: {className:"breadCrumb"}, children: [fn.buildBreadcrumb(window.urls, window.allCategory,ctrl.product()[0].sku.slug, []).reverse(), " ", {tag: "div", attrs: {className:"current"}, children: [window.allCategory.getItemByParam({slug: ctrl.product()[0].sku.slug}).name]}]}
-                        ]}, 
-                        {tag: "div", attrs: {className:"p-top clearfix"}, children: [
-                            {tag: "div", attrs: {className:"pt-left"}, children: [
-                                {tag: "img", attrs: {src:ctrl.product()[0].info.image[0].small, alt:"", 
-                                    onclick:function(){
-                                            ctrl.zoom=true;
-                                        }
-                                    }
-                                }
-                            ]}, 
-                            {tag: "div", attrs: {className:"pt-right"}, children: [
-                                {tag: "h1", attrs: {className:"name"}, children: [ctrl.product()[0].core.name]}, 
-                                {tag: "div", attrs: {className:"msp"}, children: ["Mã Sản phẩm: ", {tag: "span", attrs: {}, children: [ctrl.product()[0].core.code]}]}, 
-                                {tag: "div", attrs: {className:"price"}, children: ["Giá: ", {tag: "span", attrs: {}, children: [fn.price(ctrl.product()[0].core.price[0].price), " VNĐ"]}]}
-                            ]}
-                        ]}, 
-                        {tag: "div", attrs: {className:"p-bot"}
-
-                        }, 
-                        ctrl.zoom?({tag: "div", attrs: {className:"zoomWr"}, children: [
-                            {tag: "div", attrs: {className:"zoomImageWr noScroll zoomIn animated "}, children: [
-                                {tag: "img", attrs: {class:"", src:ctrl.product()[0].info.image[0].origin, alt:"", 
-                                 onclick:
-                                    function(event){
-                                        //var el = event.target;
-                                        //el.classList.remove("zoomIn");
-                                        //el.classList.add("zoomOut");
-                                        ctrl.zoom = false;
-                                    }
-                                 }
-                                }
-                            ]}
-                        ]}):""
-                    ]}
-                )
-            )
-        ]}
-    )
-};
-
-module.exports = Middle;
-},{"../../core/fn.msx":5}],14:[function(require,module,exports){
+},{"../../core/fn.msx":5}],16:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Middle =  function(ctrl){
@@ -707,7 +963,7 @@ var Middle =  function(ctrl){
                                     }
                                 };
 
-                                run()
+                                run();
                                 //setTimeout(function(){
                                 //    el.classList.remove("fadeOutLeft")
                                 //    el.classList.remove("animated")
@@ -743,9 +999,9 @@ var Middle =  function(ctrl){
             ctrl.products().map(function(listProducts){
                 return (
                     {tag: "div", attrs: {className:"productWr"}, children: [
-                        {tag: "h3", attrs: {}, children: [listProducts.id]}, 
+                        {tag: "h3", attrs: {}, children: [{tag: "a", attrs: {href:urls[listProducts.id], config:m.route}, children: [allCategory.getItemByParam({slug: listProducts.id}).name, " (", listProducts.value.total, " Sản phẩm)"]}, " "]}, 
                             {tag: "div", attrs: {className:"listProduct clearfix"}, children: [
-                                listProducts.value.map(function(item){
+                                listProducts.value.products.map(function(item){
                                     return (
                                         {tag: "div", attrs: {className:"itemWr"}, children: [
                                             {tag: "a", attrs: {href:(urls[item.sku.slug].replace('/c/', '/p/') + "/" + item.slug), config:m.route}, children: [
@@ -782,7 +1038,7 @@ var Middle =  function(ctrl){
 };
 
 module.exports = Middle;
-},{"../../core/fn.msx":5}],15:[function(require,module,exports){
+},{"../../core/fn.msx":5}],17:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Right = function(ctrl){
@@ -804,11 +1060,11 @@ var Right = function(ctrl){
                 
                     (!ctrl.request.ready()?({tag: "div", attrs: {className:"mid"}, children: [
                         {tag: "div", attrs: {class:"loader"}, children: ["Loading..."]}
-                    ]}):((ctrl.products()[0].value.length<1)?(
-                    {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
+                    ]}):((ctrl.products()[0].value.products.length<1)?(
+                    ""
                 ):(
                     {tag: "div", attrs: {className:"listSale"}, children: [
-                        ctrl.products()[0].value.map(function(item){
+                        ctrl.products()[0].value.products.map(function(item){
                             return (
                                 {tag: "div", attrs: {className:"saleWr clearfix"}, children: [
                                     {tag: "div", attrs: {className:"sale-info"}, children: [
@@ -836,7 +1092,7 @@ var Right = function(ctrl){
 
 module.exports = Right;
 
-},{"../../core/fn.msx":5}],16:[function(require,module,exports){
+},{"../../core/fn.msx":5}],18:[function(require,module,exports){
 var fn = require('../../core/fn.msx');
 
 var Right = function(ctrl){
@@ -856,7 +1112,7 @@ var Right = function(ctrl){
             {tag: "div", attrs: {className:"saleWr "}, children: [
                 {tag: "h3", attrs: {}, children: ["SẢN PHẨM KHUYẾN MÃI"]}, 
                 (ctrl.products().length<1)?(
-                    {tag: "div", attrs: {className:"loading"}, children: ["LOADING !!!"]}
+                    ""
                 ):(
                     {tag: "div", attrs: {className:"listSale"}, children: [
                         ctrl.products().map(function(item){
